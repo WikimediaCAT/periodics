@@ -5,6 +5,11 @@ PATH=/bin:/usr/bin
 #HOMEBOT=/home/bot/programes/subst
 #export PYTHONPATH=:/home/bot/.pywikibot_master/core
 # Això des de toolforge
+# S'engega per crontab amb una línia com aquesta (però sense el comentari)
+#0	7-12	1	*	* /usr/bin/jsub -N thanks -once -quiet /data/project/jorobot/periodics/thanks/thankslaunch.sh
+# O sigui, el dia 1 de cada mes, a cada hora en punt entre les 7 i les 12 del
+# matí. Tots els mesos, i qualsevol dia de la setmana. Amb un cop n'hi hauria
+# prou, però és per si la màquina estigués caiguda o apagada
 HOMEBOT=/data/project/jorobot/periodics/thanks
 
 # Aquest shell script està pensat per passar-lo en qualsevol moment del mes
