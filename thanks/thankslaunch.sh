@@ -1,7 +1,11 @@
 #!/bin/sh
 PATH=/bin:/usr/bin
-HOMEBOT=/home/bot/programes/subst
-export PYTHONPATH=:/home/bot/.pywikibot_master/core
+
+# Això des de casa
+#HOMEBOT=/home/bot/programes/subst
+#export PYTHONPATH=:/home/bot/.pywikibot_master/core
+# Això des de toolforge
+HOMEBOT=/data/project/jorobot/periodics/thanks
 
 ultimany=`cat $HOMEBOT/thanksbot.dat | cut -c1-4`
 ultimmes=`cat $HOMEBOT/thanksbot.dat | cut -c5-7`
