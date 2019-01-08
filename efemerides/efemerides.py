@@ -285,7 +285,7 @@ def main():
          strpag = "%d d'%s" % (dia,mescatala(mes))
        else:
          strpag = "%d de %s" % (dia,mescatala(mes))
-       print strpag
+       print strpag.encode("utf-8")
        page = pywikibot.Page(casite,strpag)
        try:
            txt = page.get()
