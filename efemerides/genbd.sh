@@ -3,10 +3,9 @@ PATH=/bin:/usr/bin
 
 # Des de toolforge
 # S'engega per crontab amb una línia com aquesta (però sense el comentari)
-#0	20	20	*	* /usr/bin/jsub -N thanks -once -quiet /data/project/jorobot/periodics/thanks/gensub.sh
+#0	20	20	*	* /usr/bin/jsub -N gensub -once -quiet /data/project/jorobot/periodics/efemerides/gensub.sh
 # O sigui, el dia 20 de cada mes, a les 8 del vespre
-# Tots els mesos, i qualsevol dia de la setmana. Amb un cop n'hi hauria
-# prou, però és per si la màquina estigués caiguda o apagada
+# Tots els mesos, i qualsevol dia de la setmana.
 HOMEBOT=/data/project/jorobot/periodics/efemerides
 
 # si no existeix el directori, el creem, però això només hauria de ser la
