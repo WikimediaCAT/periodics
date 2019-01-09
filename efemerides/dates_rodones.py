@@ -204,7 +204,7 @@ def main():
       # Ara ja tanquem
       contingut = contingut + '\n' + final_plantilla()
       contingut = contingut + '\n' + navegacio_efemerides(dia,mes,any_volgut)
-      print contingut
+      print contingut.encode("utf-8")
       # si ens han dit que creem la pàgina, ho fem
       if gravar:
          nomplant = u"Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
