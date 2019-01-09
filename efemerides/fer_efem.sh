@@ -15,4 +15,4 @@ mes=`date +'%m' -d "+$ANTELACIO days"`
 any=`date +'%Y' -d "+$ANTELACIO days"`
 
 # Creem 7 dies seguits i ho gravem
-python ./dates_rodones.py $any $mes $dia 7 1
+python $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
