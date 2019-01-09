@@ -15,9 +15,16 @@ if [ ! -d bd ]
    then mkdir bd
 fi
 
-# si s'executa el 20, i li sumem 20 dies més, segur que caiem al mes
-# següent. date -d "+20 days" et dóna la data d'avui més 20 dies
+if [ $# -eq 1 ]
+then antelacio=$1
+else antelacio=1
+fi
+
+# per defecte, si s'executa un mes, volem que ho faci el mes següent.
+# date -d "+1 month" et dóna la data d'avui més 1 mes
 # el +'%m' és perquè només t'ensenyi el mes, en 2 dígits
-mesqueve=`date +'%m' -d "+20 days"`
+# Podem passar-hi un paràmetre per fer altres mesos manualment
+# per exemple: ./gensub.sh 2
+mesqueve=`date +'%m' -d "+$antelacio month"`
 
 python ./efemerides.py $mesqueve
