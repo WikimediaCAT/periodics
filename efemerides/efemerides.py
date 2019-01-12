@@ -230,7 +230,6 @@ def processar_esdeveniment(text,codi):
      for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',esde,re.MULTILINE):
         resta_fila = mobj.group(2)
         celles = resta_fila.split("||")
-        print celles
         desc_esdev = celles[0]+", "+celles[1]
         llistadesc = [desc_esdev]
         toret.append((mobj.group(1),llistadesc))
