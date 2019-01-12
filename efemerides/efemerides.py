@@ -148,6 +148,12 @@ def buscar_persones(text,inici,final):
       else:     # això passa si la persona no té article, retornem llista buida
         return []
 
+def buscar_persona_cell(celles):
+   persona = trobar_huma(celles[1],0,len(celles[1]))
+   if len(persona)>0:
+      return [(persona[0],celles[2].rstrip()+' '+celles[3].lstrip())]
+   return []
+
 def trobar_huma(text,inici,final):
    # Aquesta regex posa al grup 1, si existeix, l'enllaç real seguit
    # de la barra | (l'haurem de treure).
@@ -158,7 +164,7 @@ def trobar_huma(text,inici,final):
    # Si el text diu, "neix el fill de [[Dénethor]], [[Boromir]], cagada
    for mobj in re.finditer(r'\[\[([^|\]]*\|)?([^\]]+)\]\]',text[inici:final]):
       if mobj.group(1)!= None:
-         nomsenselabarra = mobj.group(1)[0:-1]
+         nomsenselabarra = mobj.group(1)[0:-1]  # traient l'últim caràcter (|)
       else:
          nomsenselabarra = mobj.group(2)
       if eshuma(nomsenselabarra):
@@ -174,8 +180,8 @@ def trobar_desc(text):
    # cometes que hi poden haver al principi.
    index = 0
    llargada = len(text)
-   while not (text[index].isalnum() or text[index]=='[' or text[index]=='\n' \
-           or text[index]=='<'):
+   while (index < llargada) and not (text[index].isalnum() \
+           or text[index]=='[' or text[index]=='\n' or text[index]=='<'):
        index = index + 1
    inici = index
    while index < llargada and text[index]!='\n': 
@@ -231,7 +237,7 @@ def processar_fet_biologic(text,codi):
    # perquè no sempre està tot en una línia.
    mobjant = None
    toret = []
-   for mobj in re.finditer(r'\*\s\[\[(\d{3,4})\]\]',naix):
+   for mobj in re.finditer(r'\*\s*\[\[(\d{3,4})\]\]',naix):
       # Aquest bucle és complicat perquè la informació per buscar n
       # no la tens fins al pas n+1. Per això ens quedem referència del mobj
       # anterior. Busquem des del final de l'any anterior fins al principi
@@ -243,9 +249,22 @@ def processar_fet_biologic(text,codi):
          toret.append((mobjant.group(1),lpersones))
       mobjant = mobj
    # Quan sortim del bucle, encara en falta un
-   lpersones = buscar_persones(naix,mobjant.start(),len(naix))
-   toret.append((mobjant.group(1),lpersones))
-   return toret
+   if mobjant != None:
+     lpersones = buscar_persones(naix,mobjant.start(),len(naix))
+     toret.append((mobjant.group(1),lpersones))
+     return toret
+   # Fins aquí, és amb la sintaxi habitual. Hi ha articles, com el
+   # [[18 de març]] que ho fan amb una taula en comptes de text. Ho tractem
+   # aquí.
+   else:
+     # aquí no hi ha la dificultat d'abans. Tot està en una posició fixa
+     # dins de la taula. Fem un split per cel·les de la taula
+     for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',naix,re.MULTILINE):
+        resta_fila = mobj.group(2)
+        celles = resta_fila.split("||")
+        lpersones = buscar_persona_cell(celles)
+        toret.append((mobj.group(1),lpersones))
+     return toret
  
 # escrivim al fitxer de sortida, en un format estàndard
 def gravar_fitxer(estructura,fitx,dia,mes,fet):
