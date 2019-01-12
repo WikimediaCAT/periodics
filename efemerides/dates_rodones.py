@@ -67,7 +67,7 @@ def buscar_efemerides(fitxer, dia, mes, anyv, quantfa):
           # Traiem el salt de línia que hem llegit al final
           text = text.rstrip()
           # Ja podem generar la línia que escriurem
-          contingut = contingut+(u"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text)).encode("utf-8")+'\n'
+          contingut = contingut+u"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text)+'\n'
    return contingut
 
 # Funció per construir el dia, que posi "2 de gener" o "1 d'octubre"
@@ -108,7 +108,7 @@ def navegacio_efemerides(dia,mes,anyv):
    text_dia_abans = const_dia(dia_abans.day,dia_abans.month)
    text_dia_despres = const_dia(endema.day,endema.month)
    # Ara ja ho podem construir
-   contingut = (u'{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)).encode("utf-8")
+   contingut = u'{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
@@ -173,7 +173,7 @@ def main():
       # ja sap que contingut serà de tipus unicode, i no petarà quan li
       # vinguin accents i ces trencades a la resta de línies
       # si no, petava al primer accent (el d'efemèrides)
-      contingut = capcalera_plantilla(mes).encode("utf-8")
+      contingut = capcalera_plantilla(mes)
       # Anys interessants del primer segle
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,1)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,2)
@@ -209,7 +209,7 @@ def main():
       if gravar:
          nomplant = u"Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
          page = pywikibot.Page(casite,nomplant)
-         page.put(contingut,comment=u"Robot prepara plantilla amb efemèrides")
+         page.put(contingut,comment=u"Robot prepara plantilla amb efemèrides",force=True)
 
       # ara ja comptem quin dia és demà, per la següent volta al bucle
       data = data + datetime.timedelta(days=1)
