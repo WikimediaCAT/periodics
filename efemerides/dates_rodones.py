@@ -9,8 +9,9 @@ import datetime
 
 # Bloc del principi de la pàgina d'efemèrides, amb contingut constant
 # simplement, es bolca tot en un string, i es retorna aquest string
-def capcalera_plantilla(mes):
-  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides de '+ mescatala(mes)+u' de la portada 600k]]</noinclude>'
+def capcalera_plantilla(mes,dia):
+  strdia = "%02d" % dia
+  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides de '+ mescatala(mes)+u' de la portada 600k|'+strdia+']]</noinclude>'
   contingut = contingut + '\n' + "<div class=caixa-flex>"
   contingut = contingut + '\n' + '<div style="display:flex; flex:1 1 0; flex-direction:column;min-width:75%;height:100%">'
   contingut = contingut + '\n'
@@ -174,7 +175,7 @@ def main():
    # Comencem el bucle principal, que fem per cada dia que hem de tractar
    i = 0
    while i < n_dies:
-      contingut = capcalera_plantilla(mes)
+      contingut = capcalera_plantilla(mes,dia)
       # Anys interessants del primer segle
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,1)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,2)
