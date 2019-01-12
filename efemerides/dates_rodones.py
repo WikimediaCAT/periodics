@@ -9,13 +9,13 @@ import datetime
 
 # Bloc del principi de la pàgina d'efemèrides, amb contingut constant
 # simplement, es bolca tot en un string, i es retorna aquest string
-def capcalera_plantilla():
-  contingut='<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Plantilles de la portada 600k]]</noinclude>'
+def capcalera_plantilla(mes):
+  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides de '+ mescatala(mes)+u' de la portada 600k]]</noinclude>'
   contingut = contingut + '\n' + "<div class=caixa-flex>"
   contingut = contingut + '\n' + '<div style="display:flex; flex:1 1 0; flex-direction:column;min-width:75%;height:100%">'
   contingut = contingut + '\n'
   contingut = contingut + '\n' + '<div class=caixa-flex>'
-  contingut = contingut + '\n' + '{{Portada600k/blocefemèrides\n|contingut=\n'
+  contingut = contingut + '\n' + u'{{Portada600k/blocefemèrides\n|contingut=\n'
   #print contingut
   return contingut
 
@@ -108,7 +108,7 @@ def navegacio_efemerides(dia,mes,anyv):
    text_dia_abans = const_dia(dia_abans.day,dia_abans.month)
    text_dia_despres = const_dia(endema.day,endema.month)
    # Ara ja ho podem construir
-   contingut = ('{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)).decode("utf-8")
+   contingut = (u'{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)).encode("utf-8")
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
@@ -169,11 +169,11 @@ def main():
    # Comencem el bucle principal, que fem per cada dia que hem de tractar
    i = 0
    while i < n_dies:
-      # És important posar el .decode a la primera, perquè llavors el python
+      # És important posar el .encode a la primera, perquè llavors el python
       # ja sap que contingut serà de tipus unicode, i no petarà quan li
       # vinguin accents i ces trencades a la resta de línies
       # si no, petava al primer accent (el d'efemèrides)
-      contingut = capcalera_plantilla().decode("utf-8")
+      contingut = capcalera_plantilla(mes).encode("utf-8")
       # Anys interessants del primer segle
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,1)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,2)
@@ -204,7 +204,7 @@ def main():
       # Ara ja tanquem
       contingut = contingut + '\n' + final_plantilla()
       contingut = contingut + '\n' + navegacio_efemerides(dia,mes,any_volgut)
-      print contingut.encode("utf-8")
+      print contingut
       # si ens han dit que creem la pàgina, ho fem
       if gravar:
          nomplant = u"Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
