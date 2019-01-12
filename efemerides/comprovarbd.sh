@@ -3,8 +3,8 @@
 #                  esdeveniments, naixements i defuncions a tots els dies
 #
 PATH=/bin:/usr/bin
-#HOME=/data/project/jorobot/periodics/efemerides
-HOME=~/programes/periodics/efemerides
+HOME=/data/project/jorobot/periodics/efemerides
+#HOME=~/programes/periodics/efemerides
 BD=$HOME/bd
 
 # Llegim un paràmetre del mes que s'ha de processar. Si no ens el passen,
