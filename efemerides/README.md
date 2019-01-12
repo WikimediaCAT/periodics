@@ -4,7 +4,11 @@
 mes següent al que estem. La intenció és cridar-lo des del crontab perquè
 cada mes es posi a l'última versió, incorporant el que hagin posat els
 viquipedistes en el darrer any. Se li pot donar un paràmetre que és quants
-mesos ha de saltar per crear la base de dades
+mesos ha de saltar per crear la base de dades.
+
+*comprovarbd.sh* - shell script que comprova si tots els dies del mes tenen
+algun naixement, esdeveniment i defunció. Si no, és que alguna cosa ha anat
+malament.
 
 *efemerides.py* - crea, al directori bd, uns fitxers plans que
 són la base de dades per buscar efemèrides. Es crea un fitxer per cada mes,
