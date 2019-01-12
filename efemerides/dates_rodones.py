@@ -115,6 +115,15 @@ def navegacio_efemerides(dia,mes,anyv):
    #print contingut
    return contingut
 
+# funció per obrir el fitxer que toca del mes
+def obrir_fitxerbd(mes):
+   try:
+      fitx_efem = codecs.open("bd/efemerides_%02d.txt" % mes,'r',encoding='utf-8')
+   except:
+      print u"No hem pogut obrir el fitxer bd/efemerides_%02d.txt" % mes
+      exit()
+   return fitx_efem
+
 # Els arguments són:
 # any mes i dia primer que es crearà
 # nombre de dies que es vol fer d'una tongada
@@ -122,7 +131,7 @@ def navegacio_efemerides(dia,mes,anyv):
 # poses res, o poses qualsevol cosa que no sigui un 1
 def main():
    if len(sys.argv)!=5 and len(sys.argv)!=6:
-       print u"Ús: python dates_rodones.py <any> <mes> <dia> <nombre_dies> <gravar (1 o 0)>"
+       print u"Ús: python dates_rodones.py <any> <mes> <dia> <nombre_dies> <gravar (1 o 0)>".encode("utf-8")
        exit()
    try:
        any_volgut = int(sys.argv[1])
@@ -161,18 +170,10 @@ def main():
    casite = pywikibot.Site('ca')
    data = datetime.date(any_volgut,mes,dia)
    # obrim la base de dades que toca segons el mes
-   try:
-      fitx_efem = codecs.open("bd/efemerides_%02d.txt" % mes,'r',encoding='utf-8')
-   except:
-      print u"No hem pogut obrir el fitxer bd/efemerides_%02d.txt" % mes
-      exit()
+   fitx_efem = obrir_fitxerbd(mes)
    # Comencem el bucle principal, que fem per cada dia que hem de tractar
    i = 0
    while i < n_dies:
-      # És important posar el .encode a la primera, perquè llavors el python
-      # ja sap que contingut serà de tipus unicode, i no petarà quan li
-      # vinguin accents i ces trencades a la resta de línies
-      # si no, petava al primer accent (el d'efemèrides)
       contingut = capcalera_plantilla(mes)
       # Anys interessants del primer segle
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,1)
@@ -213,8 +214,13 @@ def main():
 
       # ara ja comptem quin dia és demà, per la següent volta al bucle
       data = data + datetime.timedelta(days=1)
+      # si canviem de mes, hem de tancar el fitxer de base de dades, i
+      # obrir el del mes nou
+      if data.month != mes:
+          fitx_efem.close()
+          mes = data.month
+          fitx_efem = obrir_fitxerbd(mes)
       dia = data.day
-      mes = data.month
       any_volgut = data.year
       i = i +1
    pass
