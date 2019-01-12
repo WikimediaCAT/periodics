@@ -205,7 +205,7 @@ def processar_esdeveniment(text,codi):
    # perquè no sempre està tot en una línia.
    mobjant = None
    toret = []
-   for mobj in re.finditer(r'\*\s\[\[(\d{3,4})\]\]',esde):
+   for mobj in re.finditer(r'\*\s*\[\[(\d{3,4})\]\]',esde):
       # Aquest bucle és complicat perquè la informació per buscar n
       # no la tens fins al pas n+1. Per això ens quedem referència del mobj
       # anterior. Busquem des del final de l'any anterior fins al principi
@@ -217,9 +217,24 @@ def processar_esdeveniment(text,codi):
          toret.append((mobjant.group(1),lesdev))
       mobjant = mobj
    # Quan sortim del bucle, encara en falta un
-   lesdev = buscar_esdeveniments(esde,mobjant.start(),len(esde))
-   toret.append((mobjant.group(1),lesdev))
-   return toret
+   if mobjant != None:
+      lesdev = buscar_esdeveniments(esde,mobjant.start(),len(esde))
+      toret.append((mobjant.group(1),lesdev))
+      return toret
+   # Fins aquí, és amb la sintaxi habitual. Hi ha articles, com el
+   # [[7 d'abril]] que ho fan amb una taula en comptes de text. Ho tractem
+   # aquí.
+   else:
+     # aquí no hi ha la dificultat d'abans. Tot està en una posició fixa
+     # dins de la taula. Fem un split per cel·les de la taula
+     for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',esde,re.MULTILINE):
+        resta_fila = mobj.group(2)
+        celles = resta_fila.split("||")
+        print celles
+        desc_esdev = celles[0]+", "+celles[1]
+        llistadesc = [desc_esdev]
+        toret.append((mobj.group(1),llistadesc))
+     return toret
 
 # Aquesta es crida per naixements i defuncions
 def processar_fet_biologic(text,codi):
