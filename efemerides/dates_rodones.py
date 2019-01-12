@@ -67,7 +67,7 @@ def buscar_efemerides(fitxer, dia, mes, anyv, quantfa):
           # Traiem el salt de línia que hem llegit al final
           text = text.rstrip()
           # Ja podem generar la línia que escriurem
-          contingut = contingut+(u"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text))+'\n'
+          contingut = contingut+(u"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text)).encode("utf-8")+'\n'
    return contingut
 
 # Funció per construir el dia, que posi "2 de gener" o "1 d'octubre"
