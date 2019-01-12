@@ -1,4 +1,4 @@
-** Com es gestiona la portada **
+**Com es gestiona la portada**
 
 *genbd.sh* - shell script que crida efemerides.py. Sense paràmetres, fa el
 mes següent al que estem. La intenció és cridar-lo des del crontab perquè
