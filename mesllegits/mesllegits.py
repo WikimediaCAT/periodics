@@ -14,7 +14,8 @@ def llegir_intro(article):
    try:
       txt = page.get()
    except:
-      print u"La pàgina "+article+" no existeix ?????"
+      print u"La pàgina "+article+" no existeix ?????".encode("utf-8")
+      exit()
 
    # Aquesta expressió regular agafa el principi de l'article, i s'atura
    # quan troba o bé un punt i apart (línia en blanc, ^$), o bé el principi
@@ -73,7 +74,7 @@ def llegir_bd(titol):
    # Si existeix el fitxer a la base de dades, el llegim, i retornem el que
    # hem llegit
    try:
-     with open("./textos/"+titol+".json","r") as entrada:
+     with open("./textos/"+titol.encode("utf-8")+".json","r") as entrada:
        dicc_json= json.load(entrada)
        return dicc_json
    # Si no, retornem un None, i ja farem
@@ -91,7 +92,7 @@ def crear_staging(titol, visites):
        'visites':visites,
        'text':rap
    })
-   with open("./staging/"+titol+".json","w") as sortida:
+   with open("./staging/"+titol.encode("utf-8")+".json","w") as sortida:
       json.dump(dicc_json,sortida)
       sortida.close()
 
@@ -104,7 +105,7 @@ def treure_refs(text):
 # Actualitza la pàgina [[Plantilla:Portada600k/carruselmésllegits]]
 def main():
    if len(sys.argv)!=1:
-       print u"Ús: python mesllegits.py"
+       print u"Ús: python mesllegits.py".encode("utf-8")
        exit()
 
    avui = datetime.date.today()
