@@ -20,6 +20,7 @@ El que ha de fer algú si veu un fitxer a *staging* és arreglar-lo, triar la
 foto, i moure'l al directori *textos* (idealment, a *staging* no hi ha d'haver
 res).
 
-S'engegarà per crontab, a la matinada, i ho anirà provant al llarg del dia.
-Si s'executa moltes vegades en un dia, tampoc no passa res, perquè intentarà
-gravar exactament el mateix article.
+S'engegarà per crontab, a la matinada amb l'script *mesllegits.sh*, i ho anirà
+provant al llarg del dia. Si s'executa moltes vegades en un dia, tampoc no
+passa res, perquè intentarà gravar exactament el mateix article.
+
