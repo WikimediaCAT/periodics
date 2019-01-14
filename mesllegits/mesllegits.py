@@ -8,6 +8,29 @@ import json
 import requests
 import datetime
 
+# Va a wikidata, busca si hi ha un fitxer d'imatge, i el torna. Si no,
+# retorna None
+# El paràmetre és una pywikibot.Page
+def wd_imatge(pagina):
+   trobat = False
+   try:
+      item = pywikibot.ItemPage.fromPage(pagina,pywikibot.Site("wikidata","wikidata"))
+   except:   # si no hi ha item, ja podem plegar
+      return None
+   item_dict = item.get()
+   if 'P18' in item.claims:     # P18 és la imatge
+      clm_dict = item_dict["claims"]
+      clm_fitxer = clm_dict["P18"]
+      for clm in clm_fitxer:
+          tg = clm.getTarget()
+          nom_fitxer = tg.titleWithoutNamespace()
+          trobat = True
+          break         # Només passarem un cop pel bucle, ja n'hi ha prou
+   if trobat:
+      return nom_fitxer
+   else:
+      return None
+
 def llegir_intro(article):
    casite = pywikibot.Site('ca')
    page = pywikibot.Page(casite,article)
@@ -30,7 +53,17 @@ def llegir_intro(article):
       capcalera = treure_refs(mobj.group(1))
    else:
       capcalera = ""
-   return capcalera
+   # Ara busquem si a wikidata hi ha una imatge
+   nom_fitxer = wd_imatge(page)
+
+   # Si no hi ha imatge a wikidata, busquem al text a veure si hi ha sort
+   if nom_fitxer == None:
+       mobj = re.match(r"\|\s*imat?ge\s*=(.*?)\.([Pp][Nn][Gg]|[Jj][Pp][Gg])",txt,re.MULTILINE|re.DOTALL)
+       if mobj != None:
+           nom_fitxer = mobj.group(1)+'.'+mobj.group(2)
+   # retornem la capcalera generada i el suggeriment de fitxer, encara que
+   # sigui None
+   return (capcalera,nom_fitxer)
 
 def capcalera_plantilla():
   a = '<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Plantilles de la portada 600k]]</noinclude>\n'
@@ -83,12 +116,16 @@ def llegir_bd(titol):
 
 # Crea un fitxer model a l'àrea de staging, i l'omple amb info d'exemple
 def crear_staging(titol, visites):
-   rap = llegir_intro(titol)
+   (rap,fitxer) = llegir_intro(titol)
+   if fitxer == None:
+      model = "Posar_imatge_bona.jpg"
+   else:
+      model = fitxer
    dicc_json = {}
    dicc_json['portada'] = []
    dicc_json['portada'].append({
        'article':titol,
-       'imatge':"Posar_imatge_bona.jpg",
+       'imatge':model,
        'visites':visites,
        'text':rap
    })
@@ -153,7 +190,7 @@ def main():
    for elt_article in llista:
       titol = elt_article['article']
       vistes = elt_article['views']
-      if titol!="Portada" and titol[0:9]!="Especial:":
+      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:":
          candidats = candidats + 1
          mes_vistos.append((titol,vistes))
       if candidats >= 10:
