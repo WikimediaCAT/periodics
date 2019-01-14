@@ -31,6 +31,26 @@ def wd_imatge(pagina):
    else:
       return None
 
+# Funció booleana que indica si un fitxer és a commons, a cawiki o no existeix
+def fitxer_existeix(nomfit):
+   commons = pywikibot.Site('commons','commons')
+   wp_file = pywikibot.FilePage(commons,nomfit)
+   try:
+      fitxerexisteix = wp_file.exists()
+   except:
+      fitxerexisteix = False
+   # Si ja l'hem trobat a Commons no cal buscar més
+   if fitxerexisteix:
+      return True
+   # ara busquem a cawiki
+   casite = pywikibot.Site('ca')
+   wp_file = pywikibot.FilePage(casite,nomfit)
+   try:
+      fitxerexisteix = wp_file.exists()
+   except:
+      fitxerexisteix = False
+   return fitxerexisteix
+
 def llegir_intro(article):
    casite = pywikibot.Site('ca')
    page = pywikibot.Page(casite,article)
@@ -210,18 +230,33 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
+        print "No podem gravar perquè l'article ",article," no és a la BD"
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
         text = info_json['portada'][0]['text']
+        # Ara comprovem que la imatge llegida existeix, per si de cas
+        # Total, és un fitxer generat manualment i podria haver-hi un error.
+        # Si no existeix, no podrem
+        # gravar
+        podemgravar = fitxer_existeix(imatge)
+        if not podemgravar:
+           print "No podem gravar perquè el fitxer ",imatge," no existeix"
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
    if podemgravar:
      textplantilla = textplantilla + final_plantilla()
      casite = pywikibot.Site('ca')
      nomplant = u"Plantilla:Portada600k/carruselmésllegits"
      pagina = pywikibot.Page(casite,nomplant)
-     #print textplantilla
-     pagina.put(textplantilla,comment=u"Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
+
+     # abans de gravar, mirem si ja està bé. Per crontab s'executarà uns
+     # quants cops i potser és redundant
+     textactual = pagina.get()
+     # Pot ser que siguin iguals, excepte el salt de línia final. Fem un
+     # rstrip() per si de cas
+     if textactual.rstrip() != textplantilla.rstrip():
+        pagina.put(textplantilla,comment=u"Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
+        #print textplantilla
    # la resta, directes a staging
    for i in mes_vistos[4:]:
      article = i[0]
