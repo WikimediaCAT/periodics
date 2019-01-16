@@ -233,7 +233,7 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
-        print u"No podem gravar perquè l'article ",article.encode("utf-8"),u" no és a la BD"
+        print u"No podem gravar perquè l'article "+article+u" no és a la BD".encode("utf-8")
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
