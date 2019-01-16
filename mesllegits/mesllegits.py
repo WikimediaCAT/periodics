@@ -67,7 +67,7 @@ def llegir_intro(article):
    # quan troba o bé un punt i apart (línia en blanc, ^$), o bé el principi
    # d'un encapçalament (^==). Multiline i Dotall perquè podem agafar moltes
    # línies
-   mobj=re.match(r"(.*?)(^$|^==)",txt,re.MULTILINE|re.DOTALL)
+   mobj=re.match(r"(.*?)(^$|^==)",text,re.MULTILINE|re.DOTALL)
    # Si ho trobem, traiem les referències i ho retornem.
    # Si no, retornem en blanc. No hauria de passar, però tampoc no és cap
    # tragèdia.
@@ -233,7 +233,7 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
-        print u"No podem gravar perquè l'article "+article+u" no és a la BD".encode("utf-8")
+        print (u"No podem gravar perquè l'article "+article+u" no és a la BD").encode("utf-8")
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
