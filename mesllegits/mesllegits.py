@@ -56,8 +56,11 @@ def llegir_intro(article):
    page = pywikibot.Page(casite,article)
    try:
       txt = page.get()
+   except pywikibot.IsRedirectPage:
+      page = page.getRedirectTarget()
+      text = page.get()
    except:
-      print u"La pàgina "+article+" no existeix ?????".encode("utf-8")
+      print u"La pàgina "+article.encode("utf-8")+" no existeix ?????"
       exit()
 
    # Aquesta expressió regular agafa el principi de l'article, i s'atura
@@ -230,7 +233,7 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
-        print "No podem gravar perquè l'article ",article," no és a la BD"
+        print u"No podem gravar perquè l'article ",article.encode("utf-8"),u" no és a la BD"
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
@@ -241,7 +244,7 @@ def main():
         # gravar
         podemgravar = fitxer_existeix(imatge)
         if not podemgravar:
-           print "No podem gravar perquè el fitxer ",imatge," no existeix"
+           print u"No podem gravar perquè el fitxer ",imatge.encode("utf-8")," no existeix"
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
    if podemgravar:
      textplantilla = textplantilla + final_plantilla()
