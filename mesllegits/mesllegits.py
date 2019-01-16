@@ -58,7 +58,7 @@ def llegir_intro(article):
       txt = page.get()
    except pywikibot.IsRedirectPage:
       page = page.getRedirectTarget()
-      text = page.get()
+      txt = page.get()
    except:
       print u"La pàgina "+article.encode("utf-8")+" no existeix ?????"
       exit()
@@ -67,7 +67,7 @@ def llegir_intro(article):
    # quan troba o bé un punt i apart (línia en blanc, ^$), o bé el principi
    # d'un encapçalament (^==). Multiline i Dotall perquè podem agafar moltes
    # línies
-   mobj=re.match(r"(.*?)(^$|^==)",text,re.MULTILINE|re.DOTALL)
+   mobj=re.match(r"(.*?)(^$|^==)",txt,re.MULTILINE|re.DOTALL)
    # Si ho trobem, traiem les referències i ho retornem.
    # Si no, retornem en blanc. No hauria de passar, però tampoc no és cap
    # tragèdia.
