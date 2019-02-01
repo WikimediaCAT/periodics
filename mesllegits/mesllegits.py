@@ -170,8 +170,8 @@ def main():
 
    avui = datetime.date.today()
    ahir = avui + datetime.timedelta(days=-1)
-   any_actual = avui.year
-   mes = avui.month
+   any_actual = ahir.year
+   mes = ahir.month
    dia = ahir.day
    # Obtenim les dades que es generen automàticament
    uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/all-access/%d/%02d/%02d" % (any_actual,mes,dia)
