@@ -162,12 +162,18 @@ def treure_refs(text):
    text = re.sub(r"<[Rr][Ee][Ff](\s*name\s*=[^>]*)?\s*\/\s*>","",text)
    return text
 
+def logsortida(cadena,fitxer):
+   fitxer.write(cadena+'\n')
+   print cadena
+   return
+
 # Actualitza la pàgina [[Plantilla:Portada600k/carruselmésllegits]]
 def main():
    if len(sys.argv)!=1:
        print u"Ús: python mesllegits.py".encode("utf-8")
        exit()
 
+   fout = open("./mesllegits.resultat","w")
    avui = datetime.date.today()
    ahir = avui + datetime.timedelta(days=-1)
    any_actual = ahir.year
@@ -179,10 +185,10 @@ def main():
    try:
      resposta = requests.get(uri)
    except:
-     print "Problema llegint dades de wikimedia.org"
+     logsortida("Problema llegint dades de wikimedia.org",fout)
      exit()
    if resposta.status_code != 200:
-     print "Llegint dades de wikimedia.org hem obtingut codi %d" % resposta.status_code
+     logsortida("Llegint dades de wikimedia.org hem obtingut codi %d" % resposta.status_code,fout)
      exit()
    # Ara tenim les dades, i les passem a JSON
    ranking = json.loads(resposta.text)
@@ -201,19 +207,20 @@ def main():
    try:
      llista = ranking.items()[0][1][0]['articles']
    except:
-     print "Error accedint a les dades JSON"
+     logsortida("Error accedint a les dades JSON",fout)
      exit()
 
    candidats = 0
    # Candidats són els articles que poden anar a la portada. N'excloem la
    # pròpia portada, que sempre és la primera, i els que comencin per
    # "Especial:", com "Especial:Cerca" i "Especial:Canvis_recents"
+   # Igual amb els "Special:", que de vegades surt "Special:Search"
    mes_vistos = []
    # mes_vistos és una llista que anirem omplint amb tuples (article, visites)
    for elt_article in llista:
       titol = elt_article['article']
       vistes = elt_article['views']
-      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:":
+      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:" and titol[0:8]!="Special:":
          candidats = candidats + 1
          mes_vistos.append((titol,vistes))
       if candidats >= 10:
@@ -223,9 +230,17 @@ def main():
    # primer suposarem que sí, però només que ens en falti una, serà que no.
    textplantilla = capcalera_plantilla()
    podemgravar = True
+
+   # Fitxer que creem per la integració amb l'aplicació web. Indica quins són
+   # els articles del top 4 del dia
+   ftop4 = open("./mesllegits.top4","w")
    for i in mes_vistos[0:4]:    # Recorrem els quatre primers del rànquing
      article = i[0]
      visites = i[1]
+
+     # Escrivim el nom de l'article al fitxer de Top 4
+     ftop4.write(article.encode("utf-8")+'\n')
+
      # Mirem si ja tenim preparada foto i introducció
      info_json = llegir_bd(article)
      # si no la tenim preparada, no podrem gravar, 
@@ -233,7 +248,7 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
-        print (u"No podem gravar perquè l'article "+article+u" no és a la BD").encode("utf-8")
+        logsortida((u"No podem gravar perquè l'article "+article+u" no és a la BD").encode("utf-8"),fout)
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
@@ -244,8 +259,11 @@ def main():
         # gravar
         podemgravar = fitxer_existeix(imatge)
         if not podemgravar:
-           print u"No podem gravar perquè el fitxer ",imatge.encode("utf-8")," no existeix"
+           logsortida(u"No podem gravar perquè el fitxer "+imatge.encode("utf-8")," no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
+
+   ftop4.close()        # ja estem d'aquest fitxer
+
    if podemgravar:
      textplantilla = textplantilla + final_plantilla()
      casite = pywikibot.Site('ca')
@@ -260,6 +278,13 @@ def main():
      if textactual.rstrip() != textplantilla.rstrip():
         pagina.put(textplantilla,comment=u"Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
         #print textplantilla
+
+     # Això ho diem tant si ha gravat com si no. La qüestió és que està bé.
+     logsortida(u"Pàgina actualitzada OK", fout)
+   else:
+     # Si pel que sigui no hem gravat, donem un missatge
+     logsortida(u"Pàgina no actualitzada", fout)
+
    # la resta, directes a staging
    for i in mes_vistos[4:]:
      article = i[0]
@@ -269,6 +294,7 @@ def main():
      if info_json == None:
         crear_staging(article,visites)
      
+   fout.close()
 
 if __name__ == '__main__':
     try:
