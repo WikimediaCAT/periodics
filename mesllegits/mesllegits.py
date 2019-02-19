@@ -51,6 +51,42 @@ def fitxer_existeix(nomfit):
       fitxerexisteix = False
    return fitxerexisteix
 
+# Salta espais en blanc, i retorna un punter al primer caràcter que no és blanc
+# s'utilitza a saltar_plantilles()
+def saltar_blancs(text):
+   p = 0
+   while p < len(text):
+      if text[p].isspace():
+          p = p+1
+      else:
+          break
+   return p
+
+# Funció que utilitza llegir_intro() per saltar-se les plantilles de l'inici
+# d'un article: infotaules, coses de manteniment, el que sigui. Així, la
+# introducció que s'agafi ja serà directament text.
+def saltar_plantilles(text):
+   nivell = 0
+   p = saltar_blancs(text)
+   while True:
+       if text[p] == '{':
+           nivell = nivell + 1
+       elif text[p] == '}':
+           nivell = nivell - 1
+       elif text[p].isspace():
+           p = p + 1
+           continue
+           # Aquest continue és important perquè no volem fer la comprovació
+           # de nivell ara. Si hi ha dues plantilles seguides només separades
+           # per blancs o salts de línia, també ens les volem saltar
+       else:
+           if nivell == 0:
+              break
+       p = p + 1
+    # D'aquí en sortim amb el primer caràcter no blanc que està fora d'una 
+    # plantilla
+   return p
+
 def llegir_intro(article):
    casite = pywikibot.Site('ca')
    page = pywikibot.Page(casite,article)
@@ -63,11 +99,14 @@ def llegir_intro(article):
       print u"La pàgina "+article.encode("utf-8")+" no existeix ?????"
       exit()
 
+   # Primer saltem les plantilles que hi pugui haver. Buscarem a partir d'aquí
+   p = saltar_plantilles(txt)
+
    # Aquesta expressió regular agafa el principi de l'article, i s'atura
    # quan troba o bé un punt i apart (línia en blanc, ^$), o bé el principi
    # d'un encapçalament (^==). Multiline i Dotall perquè podem agafar moltes
    # línies
-   mobj=re.match(r"(.*?)(^$|^==)",txt,re.MULTILINE|re.DOTALL)
+   mobj=re.match(r"(.*?)(^$|^==)",txt[p:],re.MULTILINE|re.DOTALL)
    # Si ho trobem, traiem les referències i ho retornem.
    # Si no, retornem en blanc. No hauria de passar, però tampoc no és cap
    # tragèdia.
@@ -173,6 +212,9 @@ def main():
        print u"Ús: python mesllegits.py".encode("utf-8")
        exit()
 
+   # Proves
+   #crear_staging(u"Carles Sabater i Hernàndez","1234")
+   #exit()
    fout = open("./mesllegits.resultat","w")
    avui = datetime.date.today()
    ahir = avui + datetime.timedelta(days=-1)
