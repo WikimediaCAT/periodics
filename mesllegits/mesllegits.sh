@@ -8,6 +8,8 @@ PATH=/bin:/usr/bin
 HOMEBOT=/data/project/jorobot/periodics/mesllegits
 #HOMEBOT=~/programes/periodics/mesllegits
 
+PYTHONPATH=/data/project/shared/pywikipedia/core
+
 cd $HOMEBOT
 
 python $HOMEBOT/mesllegits.py
