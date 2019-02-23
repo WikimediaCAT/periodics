@@ -301,7 +301,7 @@ def main():
         # gravar
         podemgravar = fitxer_existeix(imatge)
         if not podemgravar:
-           logsortida(u"No podem gravar perquè el fitxer "+imatge.encode("utf-8")," no existeix",fout)
+           logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")," no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
 
    ftop4.close()        # ja estem d'aquest fitxer
@@ -322,10 +322,10 @@ def main():
         #print textplantilla
 
      # Això ho diem tant si ha gravat com si no. La qüestió és que està bé.
-     logsortida(u"Pàgina actualitzada OK", fout)
+     logsortida(u"Pàgina actualitzada OK".encode("utf-8"), fout)
    else:
      # Si pel que sigui no hem gravat, donem un missatge
-     logsortida(u"Pàgina no actualitzada", fout)
+     logsortida(u"Pàgina no actualitzada".encode("utf-8"), fout)
 
    # la resta, directes a staging
    for i in mes_vistos[4:]:
