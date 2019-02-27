@@ -135,7 +135,7 @@ def capcalera_plantilla():
 
 def final_plantilla():
   a = '</ul>\n'
-  a = a + u'<div style="width:100%;position:absolute;bottom:0;left:0;padding:10px;background-color:{{linear-gradient|top|rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)}}; text-align:center;color:white; border-top-right-radius: 5px; box-shadow: rgba(0,0,0,0.8) 0 0 15px; border-top-left-radius: 5px;font-weight:bold">Els més llegits</div>\n'
+  a = a + u'<div style="width:100%;position:absolute;bottom:0;left:0;padding:10px;background-color:{{linear-gradient|top|rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)}}; text-align:center;color:white; border-top-right-radius: 5px; box-shadow: rgba(0,0,0,0.8) 0 0 15px; border-top-left-radius: 5px;font-weight:bold">Tendències</div>\n'
   a = a + '</div>\n'
   return a
 
@@ -160,7 +160,9 @@ def element_carrusel(imatge,titol,descripcio,visites):
   a = a + '{{Portada600k/elementcarrusel\n'
   a = a + '|imatge='+imatge+'\n'
   a = a + u'|títol='+treure_subratllats(titol)+'\n'
-  a = a + u"|descripció= '''"+strvisites+" visites'''<br>"
+  #quan només mirem l'aplicació web no donem el nombre de visites
+  #a = a + u"|descripció= '''"+strvisites+" visites'''<br>"
+  a = a + u"|descripció= "
   a = a + descripcio+'\n'
   a = a + '}}\n</li>\n'
   return a
@@ -222,7 +224,10 @@ def main():
    mes = ahir.month
    dia = ahir.day
    # Obtenim les dades que es generen automàticament
-   uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/all-access/%d/%02d/%02d" % (any_actual,mes,dia)
+   # això era quan miràvem els accessos totals
+   #uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/all-access/%d/%02d/%02d" % (any_actual,mes,dia)
+   # ara mirarem des del web mòbil
+   uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/mobile-web/%d/%02d/%02d" % (any_actual,mes,dia)
    #print "llegint",uri
    try:
      resposta = requests.get(uri)
@@ -299,7 +304,9 @@ def main():
         # Total, és un fitxer generat manualment i podria haver-hi un error.
         # Si no existeix, no podrem
         # gravar
-        podemgravar = fitxer_existeix(imatge)
+        # important aquest and, perquè sinó un fitxer que existia invalidava
+        # totes les proves precedents
+        podemgravar = podemgravar and fitxer_existeix(imatge)
         if not podemgravar:
            logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")," no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
