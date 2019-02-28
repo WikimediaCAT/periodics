@@ -308,7 +308,7 @@ def main():
         # totes les proves precedents
         podemgravar = podemgravar and fitxer_existeix(imatge)
         if not podemgravar:
-           logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")," no existeix",fout)
+           logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")+" no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
 
    ftop4.close()        # ja estem d'aquest fitxer
