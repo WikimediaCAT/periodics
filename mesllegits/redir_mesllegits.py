@@ -38,8 +38,8 @@ def main():
            # si el nom ha canviat, és que era redirecció, i ho hem de canviar
            # a la nostra base de dades
            if pagename != article:
-             print pagename, "era un redirect"
-             os.rename(directori+'/'+f,directori+'/'+pagename+'.json')
+             print pagename.encode("utf-8"), "era un redirect"
+             #os.rename(directori+'/'+f,directori+'/'+pagename+'.json')
    exit()
 
 
