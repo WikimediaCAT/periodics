@@ -39,7 +39,7 @@ def main():
            # a la nostra base de dades
            if pagename != article:
              print pagename.encode("utf-8"), "era un redirect"
-             #os.rename(directori+'/'+f,directori+'/'+pagename+'.json')
+             os.rename(directori+'/'+f,directori+'/'+pagename+'.json')
    exit()
 
 
