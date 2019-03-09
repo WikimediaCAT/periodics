@@ -203,6 +203,21 @@ def treure_refs(text):
    text = re.sub(r"<[Rr][Ee][Ff](\s*name\s*=[^>]*)?\s*\/\s*>","",text)
    return text
 
+def seguir_redirects(article):
+
+   casite = pywikibot.Site('ca')
+
+   # Mirem l'article corresponent
+   pg = pywikibot.Page(casite,article)
+   # si és redirecció, mirem on va i anem resseguint
+   while pg.isRedirectPage():
+      pg = pg.getRedirectTarget()
+   # mirem quin títol ha quedat al final
+   pagename = pg.title()
+
+   pagename = pagename.replace(" ","_")
+   return pagename
+
 def logsortida(cadena,fitxer):
    fitxer.write(cadena+'\n')
    print cadena
@@ -267,9 +282,15 @@ def main():
    for elt_article in llista:
       titol = elt_article['article']
       vistes = elt_article['views']
+
       if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:" and titol[0:8]!="Special:":
-         candidats = candidats + 1
-         mes_vistos.append((titol,vistes))
+         # Mirem si hi ha redireccions, i posem només el del final
+         # i només si encara no hi és. De vegades passa que el mateix
+         # article està al top 10 dues vegades amb noms diferents
+         titol = seguir_redirects(titol)
+         if titol not in mes_vistos:
+           candidats = candidats + 1
+           mes_vistos.append((titol,vistes))
       if candidats >= 10:
          break
 
