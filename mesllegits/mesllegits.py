@@ -199,8 +199,8 @@ def crear_staging(titol, visites):
 
 def treure_refs(text):
    # Traiem les referències que hi pugui haver.
-   text = re.sub(r"<[Rr][Ee][Ff](\s*name\s*=[^>]*)?\s*>.*?<\s*\/[Rr][Ee][Ff]\s*>","",text)
-   text = re.sub(r"<[Rr][Ee][Ff](\s*name\s*=[^>]*)?\s*\/\s*>","",text)
+   text = re.sub(r"<[Rr][Ee][Ff](\s*(name|group)\s*=[^>]*)?\s*>.*?<\s*\/[Rr][Ee][Ff]\s*>","",text)
+   text = re.sub(r"<[Rr][Ee][Ff](\s*(name|group)\s*=[^>]*)?\s*\/\s*>","",text)
    return text
 
 def seguir_redirects(article):
