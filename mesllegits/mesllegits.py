@@ -283,7 +283,7 @@ def main():
       titol = elt_article['article']
       vistes = elt_article['views']
 
-      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:" and titol[0:8]!="Special:":
+      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:" and titol[0:8]!="Special:" and titol[0:7]!="Usuari:" and titol[0:8]!=u"Usuària:" and titol[0:12]!="Usuari Discu":
          # Mirem si hi ha redireccions, i posem només el del final
          # i només si encara no hi és. De vegades passa que el mateix
          # article està al top 10 dues vegades amb noms diferents
@@ -328,7 +328,7 @@ def main():
         # important aquest and, perquè sinó un fitxer que existia invalidava
         # totes les proves precedents
         podemgravar = podemgravar and fitxer_existeix(imatge)
-        if not podemgravar:
+        if not fitxer_existeix(imatge):
            logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")+" no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
 
