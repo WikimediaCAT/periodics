@@ -11,7 +11,11 @@ import datetime
 # simplement, es bolca tot en un string, i es retorna aquest string
 def capcalera_plantilla(mes,dia):
   strdia = "%02d" % dia
-  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides de '+ mescatala(mes)+u' de la portada 600k|'+strdia+']]</noinclude>'
+  if mes == 4 or mes == 8 or mes == 10:
+     strdeod = "d'"
+  else:
+     strdeod = "de "
+  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides '+ strdeod + mescatala(mes)+u' de la portada 600k|'+strdia+']]</noinclude>'
   contingut = contingut + '\n' + "<div class=caixa-flex>"
   contingut = contingut + '\n' + '<div style="display:flex; flex:1 1 0; flex-direction:column;min-width:75%;height:100%">'
   contingut = contingut + '\n'
