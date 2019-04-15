@@ -48,17 +48,18 @@ def mescatala(mes):
 def trobar_capcalera(text,titol):
    # Busca el títol entre ==, seguit de text, seguit de un altre encapçalament
    # de nivell 2
-   m = re.search(r'==\s*'+titol+r'\s*==(.+?)^==',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
+   # Posem parèntesi, per si ens passen una alternativa com Necrològiques|Defuncions
+   m = re.search(ur'==\s*('+titol+r')\s*==(.+?)^==',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
    # En general ho trobarà a la primera
    try:
-      seccio = m.group(1)
+      seccio = m.group(2)
    # però podria ser que fos l'última secció de totes. Llavors no hi haurà
    # cap més encapçalament després
    except:
       # Per si era l'última secció, busquem fins al final
-      m = re.search(r'==\s*'+titol+'\s*==(.+?)',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
+      m = re.search(r'==\s*('+titol+')\s*==(.+?)',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
       try:
-         seccio = m.group(1)
+         seccio = m.group(2)
       except:       # Si ni així, retornem un None
          return None
    return seccio
@@ -240,7 +241,7 @@ def processar_fet_biologic(text,codi):
    if codi == 'N':
       capcalera = "Naixements"
    elif codi == 'D':
-      capcalera = u"Necrològiques"
+      capcalera = u"Necrològiques|Defuncions"
    else:
       print 'Error en la crida a processar_fet_biologic, hem rebut codi ',codi
    naix = trobar_capcalera(text,capcalera)
