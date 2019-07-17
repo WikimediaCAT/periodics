@@ -10,7 +10,9 @@ BD=$HOME/bd
 # Llegim un paràmetre del mes que s'ha de processar. Si no ens el passen,
 # agafem el mes que ve.
 if [ $# -eq 1 ]
-then mes=`printf "%02d" $1`		# posa zero a l'esquerra si cal
+then param="${1#0}"		# si passes 08 o 09, dóna error, perquè es pensa
+				# que és un número en octal. Això treu zeros
+     mes=`printf "%02d" $param`		# posa zero a l'esquerra si cal
 else mes=`date +'%m' -d "+1 month"`
 fi
 
