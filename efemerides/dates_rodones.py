@@ -193,9 +193,7 @@ def main():
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,30)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,35)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,40)
-      contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,42)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,45)
-      contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,49)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,50)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,55)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,60)
@@ -206,18 +204,19 @@ def main():
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,85)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,90)
       contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,95)
-      contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,99)
       # anys rodons de segles
       for anys in range(1,19):
          contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,anys*100)
       # algun altre més
-      for decades in range(1,10):
+      for decades in range(0,10):
         contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,100+decades*10)
         contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,100+decades*10+5)
         contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,200+decades*10)
         contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,200+decades*10+5)
+        contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,300+decades*10)
+        contingut = contingut + buscar_efemerides(fitx_efem,dia,mes,any_volgut,300+decades*10+5)
       # Ara ja tanquem
-      contingut = contingut + '\n' + final_plantilla()
+      contingut = contingut + final_plantilla()
       contingut = contingut + '\n' + navegacio_efemerides(dia,mes,any_volgut)
       print contingut.encode("utf-8")
       # si ens han dit que creem la pàgina, ho fem
