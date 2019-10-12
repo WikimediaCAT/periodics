@@ -153,6 +153,12 @@ def buscar_persona_cell(celles):
    persona = trobar_huma(celles[1],0,len(celles[1]))
    if len(persona)>0:
       return [(persona[0],celles[2].rstrip()+' '+celles[3].lstrip())]
+   # hi ha vegades que no hi ha el lloc de naixement i està a la primera
+   # que ens passen
+   persona = trobar_huma(celles[0],0,len(celles[0]))
+   if len(persona)>0:
+      return [(persona[0],celles[1].rstrip()+' '+celles[2].lstrip())]
+   # si no l'hem trobat, llista buida
    return []
 
 def trobar_huma(text,inici,final):
@@ -221,20 +227,22 @@ def processar_esdeveniment(text,codi):
    if mobjant != None:
       lesdev = buscar_esdeveniments(esde,mobjant.start(),len(esde))
       toret.append((mobjant.group(1),lesdev))
-      return toret
+      # return toret     No retornem, mirarem si hi ha taules
    # Fins aquí, és amb la sintaxi habitual. Hi ha articles, com el
    # [[7 d'abril]] que ho fan amb una taula en comptes de text. Ho tractem
    # aquí.
-   else:
+   # En altres articles, com [[10 de novembre]] hi conviuen els dos estils,
+   # per tant mirem les dues coses.
+   # else: Ho fem igualment
      # aquí no hi ha la dificultat d'abans. Tot està en una posició fixa
      # dins de la taula. Fem un split per cel·les de la taula
-     for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',esde,re.MULTILINE):
+   for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',esde,re.MULTILINE):
         resta_fila = mobj.group(2)
         celles = resta_fila.split("||")
         desc_esdev = celles[0]+", "+celles[1]
         llistadesc = [desc_esdev]
         toret.append((mobj.group(1),llistadesc))
-     return toret
+   return toret
 
 # Aquesta es crida per naixements i defuncions
 def processar_fet_biologic(text,codi):
@@ -267,19 +275,21 @@ def processar_fet_biologic(text,codi):
    if mobjant != None:
      lpersones = buscar_persones(naix,mobjant.start(),len(naix))
      toret.append((mobjant.group(1),lpersones))
-     return toret
+     # return toret     No retornem, mirarem si hi ha taules
    # Fins aquí, és amb la sintaxi habitual. Hi ha articles, com el
    # [[18 de març]] que ho fan amb una taula en comptes de text. Ho tractem
    # aquí.
-   else:
+   # En altres articles, com [[10 de novembre]] hi conviuen els dos estils,
+   # per tant mirem les dues coses.
+   # else: Ho fem igualment
      # aquí no hi ha la dificultat d'abans. Tot està en una posició fixa
      # dins de la taula. Fem un split per cel·les de la taula
-     for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',naix,re.MULTILINE):
+   for mobj in re.finditer(r'^\|\s*\[?\[?(\d{3,4})\]?\]?\s*\|\|(.*)',naix,re.MULTILINE):
         resta_fila = mobj.group(2)
         celles = resta_fila.split("||")
         lpersones = buscar_persona_cell(celles)
         toret.append((mobj.group(1),lpersones))
-     return toret
+   return toret
  
 # escrivim al fitxer de sortida, en un format estàndard
 def gravar_fitxer(estructura,fitx,dia,mes,fet):
