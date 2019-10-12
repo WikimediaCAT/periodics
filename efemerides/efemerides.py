@@ -239,7 +239,7 @@ def processar_esdeveniment(text,codi):
 # Aquesta es crida per naixements i defuncions
 def processar_fet_biologic(text,codi):
    if codi == 'N':
-      capcalera = "Naixements"
+      capcalera = "Naix[ie]ments"
    elif codi == 'D':
       capcalera = u"Necrològiques|Defuncions"
    else:
