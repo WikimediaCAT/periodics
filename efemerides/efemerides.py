@@ -150,13 +150,19 @@ def buscar_persones(text,inici,final):
         return []
 
 def buscar_persona_cell(celles):
+   #print "buscant huma ",celles[1]
    persona = trobar_huma(celles[1],0,len(celles[1]))
-   if len(persona)>0:
-      return [(persona[0],celles[2].rstrip()+' '+celles[3].lstrip())]
+   if len(persona)>0 and len(celles)>2:
+      try:
+        toret = (persona[0],celles[2].rstrip()+' '+celles[3].lstrip())
+      except IndexError:
+        toret = (persona[0],celles[2].rstrip())
+      #print toret
+      return [toret]
    # hi ha vegades que no hi ha el lloc de naixement i està a la primera
    # que ens passen
    persona = trobar_huma(celles[0],0,len(celles[0]))
-   if len(persona)>0:
+   if len(persona)>0 and len(celles)>2:
       return [(persona[0],celles[1].rstrip()+' '+celles[2].lstrip())]
    # si no l'hem trobat, llista buida
    return []
@@ -174,8 +180,11 @@ def trobar_huma(text,inici,final):
          nomsenselabarra = mobj.group(1)[0:-1]  # traient l'últim caràcter (|)
       else:
          nomsenselabarra = mobj.group(2)
+      #print "nomsenselabarra", nomsenselabarra
       if eshuma(nomsenselabarra):
+          #print "es huma"
           descripcio = trobar_desc(text[inici+mobj.end():])
+          #print descripcio
           return mobj.group(0), descripcio
    
    # Si hem arribat fins aquí, no hem trobat cap humà, retornem un string buit
@@ -204,7 +213,7 @@ def treure_refs(text):
    return text
 
 def processar_esdeveniment(text,codi):
-   esde = trobar_capcalera(text,"Esdeveniments")
+   esde = trobar_capcalera(text,u"Esdeveniments|Fets històrics")
    if esde == None:
       return u"No hi ha secció d'Esdeveniments"
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
@@ -241,7 +250,19 @@ def processar_esdeveniment(text,codi):
         celles = resta_fila.split("||")
         desc_esdev = celles[0]+", "+celles[1]
         llistadesc = [desc_esdev]
-        toret.append((mobj.group(1),llistadesc))
+        if len(llistadesc) > 0:
+          toret.append((mobj.group(1),llistadesc))
+   # i aquesta és pel cas de taules amb una cel·la per línia, com al 28 de
+   # desembre
+   for mobj in re.finditer(r'^\|\-\s*\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n',esde,re.MULTILINE|re.DOTALL):
+        anyet = mobj.group(1)
+        lloc = mobj.group(2)
+        desc_esdev = mobj.group(3)
+        destaca = mobj.group(4)
+        perdesar = [lloc+", "+destaca+": "+desc_esdev]
+        #print perdesar
+        if len(perdesar)>0:
+          toret.append((anyet,perdesar))
    return toret
 
 # Aquesta es crida per naixements i defuncions
@@ -249,7 +270,7 @@ def processar_fet_biologic(text,codi):
    if codi == 'N':
       capcalera = "Naix[ie]ments"
    elif codi == 'D':
-      capcalera = u"Necrològiques|Defuncions"
+      capcalera = u"Necrològiques|Defuncions|Morts"
    else:
       print 'Error en la crida a processar_fet_biologic, hem rebut codi ',codi
    naix = trobar_capcalera(text,capcalera)
@@ -288,7 +309,31 @@ def processar_fet_biologic(text,codi):
         resta_fila = mobj.group(2)
         celles = resta_fila.split("||")
         lpersones = buscar_persona_cell(celles)
-        toret.append((mobj.group(1),lpersones))
+        if len(lpersones)>0:
+          toret.append((mobj.group(1),lpersones))
+
+   # aquesta és pel cas d'enllaços on posa l'any enllaçant al lloc de naixement
+   # estil
+   # | [[Garigliano|1503]] || [[Pere II de Mèdici]] ''l'Infortunat'' || [[República de Florència|senyor]] || [[florentí]] || {{Age nts|1472|2|15|1503|12|28}}
+   for mobj in re.finditer(r'^\|\s*\[\[[ \w,.\']+\|(\d{3,4})\]\]\s*\|\|(.*)',naix,re.MULTILINE):
+        resta_fila = mobj.group(2)
+        celles = resta_fila.split("||")
+        lpersones = buscar_persona_cell(celles)
+        if len(lpersones)>0:
+          toret.append((mobj.group(1),lpersones))
+   # i aquesta és pel cas de taules amb una cel·la per línia, com al 28 de
+   # desembre
+   for mobj in re.finditer(r'^\|\-\s*\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n',naix,re.MULTILINE|re.DOTALL):
+        anyet = mobj.group(1)
+        lloc = mobj.group(2)
+        cellapersona = mobj.group(3)
+        destaca = mobj.group(4)
+        celles = [lloc,cellapersona,destaca]
+        #print celles
+        lpersones = buscar_persona_cell(celles)
+        #print lpersones
+        if len(lpersones)>0:
+          toret.append((anyet,lpersones))
    return toret
  
 # escrivim al fitxer de sortida, en un format estàndard
