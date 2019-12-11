@@ -206,6 +206,14 @@ def trobar_desc(text):
    #print "retornem", retornar
    return retornar
 
+def treure_claudators(text):
+   # Traiem els claudàtors i només deixem el test que es vegi
+   # Model "[[article|text]]" dona "text"
+   text = re.sub(r"\[\[[^|\]]+\|([^\]]+)\]\]",r"\1",text)
+   # Model "[[text]]" dona "text"
+   text = re.sub(r"\[\[([^\]]+)\]\]",r"\1",text)
+   return text
+
 def treure_refs(text):
    # Traiem les referències que hi pugui haver.
    text = re.sub(r"<[Rr][Ee][Ff](\s*name\s*=[^>]*)?\s*>.*<\s*\/[Rr][Ee][Ff]\s*>","",text)
@@ -255,7 +263,8 @@ def processar_esdeveniment(text,codi):
    # i aquesta és pel cas de taules amb una cel·la per línia, com al 28 de
    # desembre
    for mobj in re.finditer(r'^\|\-\s*\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n',esde,re.MULTILINE|re.DOTALL):
-        anyet = mobj.group(1)
+        # en aquest cas, l'any pot estar entre claudàtors
+        anyet = treure_claudators(mobj.group(1))
         lloc = mobj.group(2)
         desc_esdev = mobj.group(3)
         destaca = mobj.group(4)
@@ -324,7 +333,8 @@ def processar_fet_biologic(text,codi):
    # i aquesta és pel cas de taules amb una cel·la per línia, com al 28 de
    # desembre
    for mobj in re.finditer(r'^\|\-\s*\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n',naix,re.MULTILINE|re.DOTALL):
-        anyet = mobj.group(1)
+        # en aquest cas, l'any pot estar entre claudàtors
+        anyet = treure_claudators(mobj.group(1))
         lloc = mobj.group(2)
         cellapersona = mobj.group(3)
         destaca = mobj.group(4)
