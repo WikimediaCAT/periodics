@@ -30,14 +30,14 @@ def get_search(searchstr):
 	'srlimit'        : 300
         }
     #sr=pywikibot.data.api.Request(**params).submit()
-    print "Cerca "+searchstr
+    print("Cerca "+searchstr)
     sr=pywikibot.data.api.Request(**params).submit()
     return sr
 
 # tres funcions auxiliars, prou evidents
 # dóna el nom en català del mes
 def mescatala(mes):
-  nomsmesos = ['gener', 'febrer', u'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
+  nomsmesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
   return nomsmesos[mes-1]
 
 # donada una tupla mes,any, retorna una altra tupla amb el mes anterior
@@ -60,15 +60,15 @@ def main():
 
   # Llegim paràmetres
   if len(sys.argv) != 3:
-      print u"Ús: python thanks.py <any> <mes>".encode("utf-8")
+      print("Ús: python thanks.py <any> <mes>".encode("utf-8"))
       return
   mes = int(sys.argv[2])
   anyllegit = int(sys.argv[1])
   if mes < 1 or mes > 12:
-     print u"Mes incorrecte ",mes
+     print("Mes incorrecte ",mes)
      return
   if any < 2015:
-     print u"Any incorrecte ",any
+     print("Any incorrecte ",any)
      return
 
   messtr= sys.argv[2].strip()
@@ -119,21 +119,21 @@ def main():
   # Ara ja tenim les dades, només cal crear la pàgina corresponent i
   # formatejar-la amb una mica de gràcia.
   # Primer, la navegació a mes anterior i mes següent
-  txtout = u"<center>[[Usuari:JoRobot/Agraïments/"+anyprevstr+"/"+mesprevstr+u"|Mes anterior]] {{·}} '''Historial''' {{·}} [[Usuari:JoRobot/Agraïments/"+anysegstr+"/"+messegstr+u"|Mes següent]]</center>\n"
+  txtout = "<center>[[Usuari:JoRobot/Agraïments/"+anyprevstr+"/"+mesprevstr+"|Mes anterior]] {{·}} '''Historial''' {{·}} [[Usuari:JoRobot/Agraïments/"+anysegstr+"/"+messegstr+"|Mes següent]]</center>\n"
   # Ara centrem les taules
-  txtout = txtout + u"<div align=\"center\">\n{{Columnes|66%}}\n"
+  txtout = txtout + "<div align=\"center\">\n{{Columnes|66%}}\n"
   # Posem capçaleres de les taules
-  txtout = txtout + u"{| class=\"wikitable sortable\"\n|+ Agraïments rebuts per usuari durant el mes de "+mescatala(mes)+" de "+anystr+"\n"
-  txtout = txtout+u"|-\n! scope=\"col\" | Usuari\n! scope=\"col\" | Agraïments\n"
+  txtout = txtout + "{| class=\"wikitable sortable\"\n|+ Agraïments rebuts per usuari durant el mes de "+mescatala(mes)+" de "+anystr+"\n"
+  txtout = txtout+"|-\n! scope=\"col\" | Usuari\n! scope=\"col\" | Agraïments\n"
 
   # Aquest bucle és per cada fila. Primer els que reben agraïments
   # No ho posem en cap ordre especial, tal com raja del conjunt que hem anat
   # omplint. Com que fem la taula sortable, ja l'ordenarà el lector si vol
-  for u, num in agraciats.items():
+  for u, num in list(agraciats.items()):
       #print dir(u)
       txtout = txtout+"|-\n"
       us= u.username
-      usuaristr = u"[[Usuari:"+us+"|"+us+"]]"
+      usuaristr = "[[Usuari:"+us+"|"+us+"]]"
       txtout = txtout+"| "+ usuaristr +"||"+ ("%d" % num)+"\n"
 
   # Tanquem la taula, canvi de columna
@@ -141,24 +141,24 @@ def main():
   txtout = txtout+"{{Columna nova}}\n"
 
   # ara ve la capçalera de la segona taula, la dels que fan agraïments
-  txtout = txtout + u"{| class=\"wikitable sortable\"\n|+ Agraïments fets per usuari durant el mes de "+mescatala(mes)+" de "+anystr+"\n"
-  txtout = txtout+u"|-\n! scope=\"col\" | Usuari\n! scope=\"col\" | Agraïments\n"
+  txtout = txtout + "{| class=\"wikitable sortable\"\n|+ Agraïments fets per usuari durant el mes de "+mescatala(mes)+" de "+anystr+"\n"
+  txtout = txtout+"|-\n! scope=\"col\" | Usuari\n! scope=\"col\" | Agraïments\n"
   # bucle amb les files dels que agraeixen
-  for u, num in graciadors.items():
+  for u, num in list(graciadors.items()):
       txtout = txtout+"|-\n"
-      usuaristr = u"[[Usuari:"+u+"|"+u+"]]"
+      usuaristr = "[[Usuari:"+u+"|"+u+"]]"
       txtout = txtout+"| "+ usuaristr +"||"+ ("%d" % num)+"\n"
   # Tanquem taula, columnes i secció
   txtout = txtout+"|}\n"
   txtout = txtout+"{{Final columnes}}\n</div>\n"
   # Categoria, que no falti
-  txtout = txtout+u"[[Categoria:Registre d'agraïments per mesos]]\n"
+  txtout = txtout+"[[Categoria:Registre d'agraïments per mesos]]\n"
 
   # I ara gravem la pàgina. Primer generem el nom
-  titolpag = u"Usuari:JoRobot/Agraïments/"+anystr+"/"+messtr
+  titolpag = "Usuari:JoRobot/Agraïments/"+anystr+"/"+messtr
   # I amb això ho gravem
   pag = pywikibot.Page(casite,titolpag)
-  pag.put(txtout,comment=u"Estadístiques d'agraïments",force=True)
+  pag.put(txtout,comment="Estadístiques d'agraïments",force=True)
 
 # Ara cridem el main que hem definit, a la pythonesca manera
 if __name__ == '__main__':

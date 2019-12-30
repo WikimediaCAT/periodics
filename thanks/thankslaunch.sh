@@ -43,5 +43,5 @@ fi
 
 # si arribem aquí, és que s'ha d'executar
 # thanks.py agafa com a paràmetres l'any i mes del que vols fer estadístiques
-python $HOMEBOT/thanks.py $nouany $noumes
+python3 $HOMEBOT/thanks.py $nouany $noumes
 echo $nouany$noumes > $HOMEBOT/thanksbot.dat  # posem la data de l'últim mes fet
