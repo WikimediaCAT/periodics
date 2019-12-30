@@ -14,4 +14,4 @@ PYTHONPATH=/data/project/shared/pywikipedia/core
 
 cd $HOMEBOT
 
-python $HOMEBOT/redir_mesllegits.py
+python3 $HOMEBOT/redir_mesllegits.py

@@ -23,7 +23,7 @@ def wd_imatge(pagina):
       clm_fitxer = clm_dict["P18"]
       for clm in clm_fitxer:
           tg = clm.getTarget()
-          nom_fitxer = tg.titleWithoutNamespace()
+          nom_fitxer = tg.title(with_ns=False)
           trobat = True
           break         # Només passarem un cop pel bucle, ja n'hi ha prou
    if trobat:
@@ -96,7 +96,7 @@ def llegir_intro(article):
       page = page.getRedirectTarget()
       txt = page.get()
    except:
-      print u"La pàgina "+article.encode("utf-8")+" no existeix ?????"
+      print("La pàgina "+article+" no existeix ?????")
       exit()
 
    # Primer saltem les plantilles que hi pugui haver. Buscarem a partir d'aquí
@@ -135,7 +135,7 @@ def capcalera_plantilla():
 
 def final_plantilla():
   a = '</ul>\n'
-  a = a + u'<div style="width:100%;position:absolute;bottom:0;left:0;padding:10px;background-color:{{linear-gradient|top|rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)}}; text-align:center;color:white; border-top-right-radius: 5px; box-shadow: rgba(0,0,0,0.8) 0 0 15px; border-top-left-radius: 5px;font-weight:bold">Tendències</div>\n'
+  a = a + '<div style="width:100%;position:absolute;bottom:0;left:0;padding:10px;background-color:{{linear-gradient|top|rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)}}; text-align:center;color:white; border-top-right-radius: 5px; box-shadow: rgba(0,0,0,0.8) 0 0 15px; border-top-left-radius: 5px;font-weight:bold">Tendències</div>\n'
   a = a + '</div>\n'
   return a
 
@@ -159,10 +159,10 @@ def element_carrusel(imatge,titol,descripcio,visites):
   a = '<li>\n'
   a = a + '{{Portada600k/elementcarrusel\n'
   a = a + '|imatge='+imatge+'\n'
-  a = a + u'|títol='+treure_subratllats(titol)+'\n'
+  a = a + '|títol='+treure_subratllats(titol)+'\n'
   #quan només mirem l'aplicació web no donem el nombre de visites
   #a = a + u"|descripció= '''"+strvisites+" visites'''<br>"
-  a = a + u"|descripció= "
+  a = a + "|descripció= "
   a = a + descripcio+'\n'
   a = a + '}}\n</li>\n'
   return a
@@ -171,7 +171,7 @@ def llegir_bd(titol):
    # Si existeix el fitxer a la base de dades, el llegim, i retornem el que
    # hem llegit
    try:
-     with open("./textos/"+titol.encode("utf-8")+".json","r") as entrada:
+     with open("./textos/"+titol+".json","r") as entrada:
        dicc_json= json.load(entrada)
        return dicc_json
    # Si no, retornem un None, i ja farem
@@ -193,7 +193,7 @@ def crear_staging(titol, visites):
        'visites':visites,
        'text':rap
    })
-   with open("./staging/"+titol.encode("utf-8")+".json","w") as sortida:
+   with open("./staging/"+titol+".json","w") as sortida:
       json.dump(dicc_json,sortida)
       sortida.close()
 
@@ -220,13 +220,13 @@ def seguir_redirects(article):
 
 def logsortida(cadena,fitxer):
    fitxer.write(cadena+'\n')
-   print cadena
+   print(cadena)
    return
 
 # Actualitza la pàgina [[Plantilla:Portada600k/carruselmésllegits]]
 def main():
    if len(sys.argv)!=1:
-       print u"Ús: python mesllegits.py".encode("utf-8")
+       print("Ús: python3 mesllegits.py")
        exit()
 
    # Proves
@@ -267,7 +267,7 @@ def main():
    # Ara ja tenim una llista de diccionaris que ja tenen les dades
    # Si no arribem aquÍ hi ha hagut algun problema i sortim
    try:
-     llista = ranking.items()[0][1][0]['articles']
+     llista = list(ranking.items())[0][1][0]['articles']
    except:
      logsortida("Error accedint a les dades JSON",fout)
      exit()
@@ -283,7 +283,7 @@ def main():
       titol = elt_article['article']
       vistes = elt_article['views']
 
-      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!=u"Viquipèdia:" and titol[0:8]!="Special:" and titol[0:7]!="Usuari:" and titol[0:8]!=u"Usuària:" and titol[0:12]!="Usuari Discu":
+      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!="Viquipèdia:" and titol[0:8]!="Special:" and titol[0:7]!="Usuari:" and titol[0:8]!="Usuària:" and titol[0:12]!="Usuari Discu":
          # Mirem si hi ha redireccions, i posem només el del final
          # i només si encara no hi és. De vegades passa que el mateix
          # article està al top 10 dues vegades amb noms diferents
@@ -307,7 +307,7 @@ def main():
      visites = i[1]
 
      # Escrivim el nom de l'article al fitxer de Top 4
-     ftop4.write(article.encode("utf-8")+'\n')
+     ftop4.write(article+'\n')
 
      # Mirem si ja tenim preparada foto i introducció
      info_json = llegir_bd(article)
@@ -316,7 +316,7 @@ def main():
      # altres articles
      if info_json == None:
         podemgravar = False
-        logsortida((u"No podem gravar perquè l'article "+article+u" no és a la BD").encode("utf-8"),fout)
+        logsortida(("No podem gravar perquè l'article "+article+" no és a la BD"),fout)
         crear_staging(article,visites)
      else:
         imatge = info_json['portada'][0]['imatge']
@@ -329,7 +329,7 @@ def main():
         # totes les proves precedents
         podemgravar = podemgravar and fitxer_existeix(imatge)
         if not fitxer_existeix(imatge):
-           logsortida(u"No podem gravar perquè el fitxer ".encode("utf-8")+imatge.encode("utf-8")+" no existeix",fout)
+           logsortida("No podem gravar perquè el fitxer "+imatge+" no existeix",fout)
         textplantilla = textplantilla+element_carrusel(imatge,article,text,visites)
 
    ftop4.close()        # ja estem d'aquest fitxer
@@ -337,7 +337,7 @@ def main():
    if podemgravar:
      textplantilla = textplantilla + final_plantilla()
      casite = pywikibot.Site('ca')
-     nomplant = u"Plantilla:Portada600k/carruselmésllegits"
+     nomplant = "Plantilla:Portada600k/carruselmésllegits"
      pagina = pywikibot.Page(casite,nomplant)
 
      # abans de gravar, mirem si ja està bé. Per crontab s'executarà uns
@@ -346,14 +346,14 @@ def main():
      # Pot ser que siguin iguals, excepte el salt de línia final. Fem un
      # rstrip() per si de cas
      if textactual.rstrip() != textplantilla.rstrip():
-        pagina.put(textplantilla,comment=u"Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
+        pagina.put(textplantilla,comment="Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
         #print textplantilla
 
      # Això ho diem tant si ha gravat com si no. La qüestió és que està bé.
-     logsortida(u"Pàgina actualitzada OK".encode("utf-8"), fout)
+     logsortida("Pàgina actualitzada OK", fout)
    else:
      # Si pel que sigui no hem gravat, donem un missatge
-     logsortida(u"Pàgina no actualitzada".encode("utf-8"), fout)
+     logsortida("Pàgina no actualitzada", fout)
 
    # la resta, directes a staging
    for i in mes_vistos[4:]:

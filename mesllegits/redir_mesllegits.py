@@ -24,7 +24,7 @@ def main():
         # separem l'extensió, només ens interessen els json
         article, extensio = os.path.splitext(f)
         if extensio == '.json':
-           article = unicode(article,'utf-8')
+           #article = str(article,'utf-8')
            # Mirem l'article corresponent
            pg = pywikibot.Page(casite,article)
            # si és redirecció, mirem on va i anem resseguint
@@ -38,7 +38,7 @@ def main():
            # si el nom ha canviat, és que era redirecció, i ho hem de canviar
            # a la nostra base de dades
            if pagename != article:
-             print pagename.encode("utf-8"), "era un redirect"
+             print(pagename + " era un redirect")
              os.rename(directori+'/'+f,directori+'/'+pagename+'.json')
    exit()
 
