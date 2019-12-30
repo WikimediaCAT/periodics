@@ -17,4 +17,4 @@ any=`date +'%Y' -d "+$ANTELACIO days"`
 
 cd $HOMEBOT
 # Creem 7 dies seguits i ho gravem
-python $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
+python3 $HOMEBOT/dates_rodones.py $any $mes $dia 7 1

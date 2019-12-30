@@ -15,12 +15,12 @@ def capcalera_plantilla(mes,dia):
      strdeod = "d'"
   else:
      strdeod = "de "
-  contingut=u'<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides '+ strdeod + mescatala(mes)+u' de la portada 600k|'+strdia+']]</noinclude>'
+  contingut='<noinclude><templatestyles src="Portada600k/styles.css" />[[Categoria:Efemèrides '+ strdeod + mescatala(mes)+' de la portada 600k|'+strdia+']]</noinclude>'
   contingut = contingut + '\n' + "<div class=caixa-flex>"
   contingut = contingut + '\n' + '<div style="display:flex; flex:1 1 0; flex-direction:column;min-width:75%;height:100%">'
   contingut = contingut + '\n'
   contingut = contingut + '\n' + '<div class=caixa-flex>'
-  contingut = contingut + '\n' + u'{{Portada600k/blocefemèrides\n|contingut=\n'
+  contingut = contingut + '\n' + '{{Portada600k/blocefemèrides\n|contingut=\n'
   #print contingut
   return contingut
 
@@ -64,7 +64,7 @@ def buscar_efemerides(fitxer, dia, mes, anyv, quantfa):
              fet_biol = "Mor "
              text = fila[4]+", "+fila[5]
           else:
-             fet_biol = u" "
+             fet_biol = " "
              try:                   # provem si hi ha fila[5]
                 text = fila[4]+", "+fila[5]
              except IndexError:     # si fila[5] no existeix, posem fila[4] i prou
@@ -72,7 +72,7 @@ def buscar_efemerides(fitxer, dia, mes, anyv, quantfa):
           # Traiem el salt de línia que hem llegit al final
           text = text.rstrip()
           # Ja podem generar la línia que escriurem
-          contingut = contingut+u"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text)+'\n'
+          contingut = contingut+"{{Portada600k/efemèride |anys = %d|text =%s%s}}" % (quantfa,fet_biol,text)+'\n'
    return contingut
 
 # Funció per construir el dia, que posi "2 de gener" o "1 d'octubre"
@@ -84,7 +84,7 @@ def const_dia(dia,mes):
   return("%s %s%s" % (dia,deod,mescatala(mes)))
 
 def mescatala(mes):
-  nomsmesos = ['gener', 'febrer', u'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
+  nomsmesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
   return nomsmesos[mes-1]
 
 # construim la part de navegació de la plantilla, amb enllaços a:
@@ -113,7 +113,7 @@ def navegacio_efemerides(dia,mes,anyv):
    text_dia_abans = const_dia(dia_abans.day,dia_abans.month)
    text_dia_despres = const_dia(endema.day,endema.month)
    # Ara ja ho podem construir
-   contingut = u'{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)
+   contingut = '{{Portada600k/navegacióefemèrides|mesanterior=%s |diaanterior=%s |avui=%s |diaposterior= %s|mesposterior=%s}}' % (text_mes_abans,text_dia_abans,text_dia_volgut,text_dia_despres,text_mes_despres)
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
    contingut = contingut + '\n' + '</div>'
@@ -125,7 +125,7 @@ def obrir_fitxerbd(mes):
    try:
       fitx_efem = codecs.open("bd/efemerides_%02d.txt" % mes,'r',encoding='utf-8')
    except:
-      print u"No hem pogut obrir el fitxer bd/efemerides_%02d.txt" % mes
+      print("No hem pogut obrir el fitxer bd/efemerides_%02d.txt" % mes)
       exit()
    return fitx_efem
 
@@ -136,30 +136,30 @@ def obrir_fitxerbd(mes):
 # poses res, o poses qualsevol cosa que no sigui un 1
 def main():
    if len(sys.argv)!=5 and len(sys.argv)!=6:
-       print u"Ús: python dates_rodones.py <any> <mes> <dia> <nombre_dies> <gravar (1 o 0)>".encode("utf-8")
+       print("Ús: python dates_rodones.py <any> <mes> <dia> <nombre_dies> <gravar (1 o 0)>")
        exit()
    try:
        any_volgut = int(sys.argv[1])
    except:
-       print u"Any incorrecte"
+       print("Any incorrecte")
        exit()
 
    try:
        mes = int(sys.argv[2])
    except:
-       print u"Mes incorrecte"
+       print("Mes incorrecte")
        exit()
 
    try:
        dia = int(sys.argv[3])
    except:
-       print u"Dia incorrecte"
+       print("Dia incorrecte")
        exit()
 
    try:
        n_dies = int(sys.argv[4])
    except:
-       print u"Nombre de dies incorrecte"
+       print("Nombre de dies incorrecte")
        exit()
 
    try:
@@ -218,12 +218,12 @@ def main():
       # Ara ja tanquem
       contingut = contingut + final_plantilla()
       contingut = contingut + '\n' + navegacio_efemerides(dia,mes,any_volgut)
-      print contingut.encode("utf-8")
+      print(contingut)
       # si ens han dit que creem la pàgina, ho fem
       if gravar:
-         nomplant = u"Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
+         nomplant = "Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
          page = pywikibot.Page(casite,nomplant)
-         page.put(contingut,comment=u"Robot prepara plantilla amb efemèrides",force=True)
+         page.put(contingut,comment="Robot prepara plantilla amb efemèrides",force=True)
 
       # ara ja comptem quin dia és demà, per la següent volta al bucle
       data = data + datetime.timedelta(days=1)
