@@ -40,7 +40,7 @@ def eshuma(nom):
   return False
 
 def mescatala(mes):
-  nomsmesos = ['gener', 'febrer', u'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
+  nomsmesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
   return nomsmesos[mes-1]
 
 # Extreu una secció sencera (a partir del títol) d'un article, i en retorna
@@ -49,7 +49,7 @@ def trobar_capcalera(text,titol):
    # Busca el títol entre ==, seguit de text, seguit de un altre encapçalament
    # de nivell 2
    # Posem parèntesi, per si ens passen una alternativa com Necrològiques|Defuncions
-   m = re.search(ur'==\s*('+titol+r')\s*==(.+?)^==',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
+   m = re.search(r'==\s*('+titol+r')\s*==(.+?)^==',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
    # En general ho trobarà a la primera
    try:
       seccio = m.group(2)
@@ -221,9 +221,9 @@ def treure_refs(text):
    return text
 
 def processar_esdeveniment(text,codi):
-   esde = trobar_capcalera(text,u"Esdeveniments|Fets històrics")
+   esde = trobar_capcalera(text,"Esdeveniments|Fets històrics")
    if esde == None:
-      return u"No hi ha secció d'Esdeveniments"
+      return "No hi ha secció d'Esdeveniments"
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
    # Ens quedem només amb la posició. Entre any i any, tornarem a buscar,
    # perquè no sempre està tot en una línia.
@@ -279,12 +279,12 @@ def processar_fet_biologic(text,codi):
    if codi == 'N':
       capcalera = "Naix[ie]ments"
    elif codi == 'D':
-      capcalera = u"Necrològiques|Defuncions|Morts"
+      capcalera = "Necrològiques|Defuncions|Morts"
    else:
-      print 'Error en la crida a processar_fet_biologic, hem rebut codi ',codi
+      print('Error en la crida a processar_fet_biologic, hem rebut codi ',codi)
    naix = trobar_capcalera(text,capcalera)
    if naix == None:
-      return u"No hi ha secció de", capcalera
+      return "No hi ha secció de", capcalera
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
    # Ens quedem només amb la posició. Entre any i any, tornarem a buscar,
    # perquè no sempre està tot en una línia.
@@ -362,12 +362,12 @@ def gravar_fitxer(estructura,fitx,dia,mes,fet):
 # utilitzar per buscar efemèrides
 def main():
    if len(sys.argv)!=2:
-       print u"Ús: python efemerides.py <número de mes>"
+       print("Ús: python efemerides.py <número de mes>")
        exit()
    try:
        mes = int(sys.argv[1])
    except:
-       print u"Mes incorrecte"
+       print("Mes incorrecte")
        exit()
 
    casite = pywikibot.Site('ca')
@@ -375,7 +375,7 @@ def main():
    try:
        sortida = codecs.open("bd/efemerides_%02d.txt" % mes,'w',encoding='utf-8')
    except:
-       print u"No s'ha pogut crear el fitxer de sortida bd/efemerides_%02d.txt" % mes
+       print("No s'ha pogut crear el fitxer de sortida bd/efemerides_%02d.txt" % mes)
        exit()
 
    for dia in range(1,32):
@@ -384,7 +384,7 @@ def main():
          strpag = "%d d'%s" % (dia,mescatala(mes))
        else:
          strpag = "%d de %s" % (dia,mescatala(mes))
-       print strpag.encode("utf-8")
+       print(strpag)
        page = pywikibot.Page(casite,strpag)
        try:
            txt = page.get()
