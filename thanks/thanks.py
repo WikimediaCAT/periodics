@@ -41,18 +41,18 @@ def mescatala(mes):
   return nomsmesos[mes-1]
 
 # donada una tupla mes,any, retorna una altra tupla amb el mes anterior
-def prevmes(mes,any):
+def prevmes(mes,anyy):
     if mes > 1:
-       return (mes-1,any)
+       return (mes-1,anyy)
     else:
-       return (12,any-1)
+       return (12,anyy-1)
 
 # donada una tupla mes,any, retorna una altra tupla amb el mes posterior
-def nextmes(mes,any):
+def nextmes(mes,anyy):
     if mes < 12:
-       return (mes+1,any)
+       return (mes+1,anyy)
     else:
-       return (1,any+1)
+       return (1,anyy+1)
 
 def main():
   #print sys.version
@@ -67,8 +67,8 @@ def main():
   if mes < 1 or mes > 12:
      print("Mes incorrecte ",mes)
      return
-  if any < 2015:
-     print("Any incorrecte ",any)
+  if anyllegit < 2015:
+     print("Any incorrecte ",anyllegit)
      return
 
   messtr= sys.argv[2].strip()
