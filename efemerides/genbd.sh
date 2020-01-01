@@ -27,6 +27,6 @@ fi
 # per exemple: ./gensub.sh 2
 mesqueve=`date +'%m' -d "+$antelacio month"`
 
-python ./efemerides.py $mesqueve
+python3 ./efemerides.py $mesqueve
 
 ./comprovarbd.sh $mesqueve
