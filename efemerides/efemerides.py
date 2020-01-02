@@ -223,7 +223,8 @@ def treure_refs(text):
 def processar_esdeveniment(text,codi):
    esde = trobar_capcalera(text,"Esdeveniments|Fets històrics")
    if esde == None:
-      return "No hi ha secció d'Esdeveniments"
+      #print("No hi ha secció d'Esdeveniments")
+      return []
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
    # Ens quedem només amb la posició. Entre any i any, tornarem a buscar,
    # perquè no sempre està tot en una línia.
@@ -284,7 +285,8 @@ def processar_fet_biologic(text,codi):
       print('Error en la crida a processar_fet_biologic, hem rebut codi ',codi)
    naix = trobar_capcalera(text,capcalera)
    if naix == None:
-      return "No hi ha secció de", capcalera
+      #print("No hi ha secció de %s" % capcalera)
+      return []
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
    # Ens quedem només amb la posició. Entre any i any, tornarem a buscar,
    # perquè no sempre està tot en una línia.
@@ -335,6 +337,13 @@ def processar_fet_biologic(text,codi):
    for mobj in re.finditer(r'^\|\-\s*\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n^\|\s*([^\n]*)\n',naix,re.MULTILINE|re.DOTALL):
         # en aquest cas, l'any pot estar entre claudàtors
         anyet = treure_claudators(mobj.group(1))
+        # pot ser que tornem a llegir alguns que havíem llegit abans, amb
+        # tots en la mateixa fila. En aquest cas, a l'any se'ns hi hauran
+        # colat barres així: ||. Si passa això, no agafem l'entrada (seria
+        # repetida igualment.
+        if anyet.find("||") > 0:
+            continue
+        # si no, continuem, que alguna cosa hem trobat
         lloc = mobj.group(2)
         cellapersona = mobj.group(3)
         destaca = mobj.group(4)
@@ -362,7 +371,7 @@ def gravar_fitxer(estructura,fitx,dia,mes,fet):
 # utilitzar per buscar efemèrides
 def main():
    if len(sys.argv)!=2:
-       print("Ús: python efemerides.py <número de mes>")
+       print("Ús: python3 efemerides.py <número de mes>")
        exit()
    try:
        mes = int(sys.argv[1])
@@ -392,13 +401,13 @@ def main():
            # el dia no existeix: 30 de febrer o 31 de novembre
            continue
        naix = processar_fet_biologic(txt,'N')
-       #print naix
+       #print(naix)
        gravar_fitxer(naix,sortida,dia,mes,'N')
        defu = processar_fet_biologic(txt,'D')
-       #print defu
+       #print(defu)
        gravar_fitxer(defu,sortida,dia,mes,'D')
        esde = processar_esdeveniment(txt,'E')
-       #print esde
+       #print(esde)
        gravar_fitxer(esde,sortida,dia,mes,'E')
 
    sortida.close()
