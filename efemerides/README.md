@@ -23,3 +23,5 @@ setmana seguida. Això dóna marge perquè algun humà les adapti i formategi
 *dates_rodones.py* - script Python que llegeix les bases de dades creades per
 efemerides.py, i genera una plantilla que, convenientment modificada, pot
 utilitzar la portada per mostrar efemerides.
+
+*canvi_dia.sh* - script per forçar l'actualització de les efemèrides de la portada a mitjanit
