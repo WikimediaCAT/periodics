@@ -9,7 +9,7 @@ PATH=/bin:/usr/bin
 # s'executa a mitjanit més un minut, per evitar el pic de la mitjanit.
 
 HOMEBOT=/data/project/jorobot/periodics/efemerides
-PWBDIR=/shared/pywikipedia/core/scripts
+PWBDIR=/data/project/shared/pywikipedia/core
 
 python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k/efemèrides
 python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k
