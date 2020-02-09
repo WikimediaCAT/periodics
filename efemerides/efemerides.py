@@ -24,7 +24,10 @@ def eshuma(nom):
   # Ara mirem l'item corresponent a Wikidata, a partir de la nostra
   try:
      item = pywikibot.ItemPage.fromPage(pagina,wdsite)
-  except Exception as e: print(e)
+  except Exception as e:
+     print(e)
+     # si no tingués item a Wikidata, també ho deixem córrer
+     return False
 
   # pugem la info que conté l'item de Wikidata
   item_dict = item.get()
