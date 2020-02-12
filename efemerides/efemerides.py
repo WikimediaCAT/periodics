@@ -4,6 +4,7 @@ import pywikibot
 import re
 import sys
 import codecs
+import time
 
 # Diu si una pàgina enllaçada des de la Viquipèdia correspon a un humà
 # Ho fa mirant la propietat corresponent de wikidata
