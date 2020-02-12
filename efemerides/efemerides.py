@@ -30,7 +30,15 @@ def eshuma(nom):
      return False
 
   # pugem la info que conté l'item de Wikidata
-  item_dict = item.get()
+  tries = 0
+  while tries < 5:
+    try:
+      item_dict = item.get()
+      break
+    except pywikibot.exceptions.TimeoutError:
+      print("Error de timeout a Wikidata, esperem i reintentem")
+      time.sleep(30)
+      tries = tries + 1
 
   if 'P31' in item.claims:  # si tenim "instància de" (P31)
       llista = item.claims['P31']
