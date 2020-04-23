@@ -61,7 +61,10 @@ def trobar_capcalera(text,titol):
    # Busca el títol entre ==, seguit de text, seguit de un altre encapçalament
    # de nivell 2
    # Posem parèntesi, per si ens passen una alternativa com Necrològiques|Defuncions
-   m = re.search(r'==\s*('+titol+r')\s*==(.+?)^==',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
+   # Afegim [^=] per forçar que el següent encapçalament sigui només de nivell
+   # 2. Al 17 de maig, algú havia posat Països Catalans en un encapçalament de
+   # nivell 3 i el match s'hi aturava
+   m = re.search(r'==\s*('+titol+r')\s*==(.+?)^==[^=]',text,re.DOTALL|re.MULTILINE|re.IGNORECASE)
    # En general ho trobarà a la primera
    try:
       seccio = m.group(2)
@@ -297,7 +300,7 @@ def processar_fet_biologic(text,codi):
       print('Error en la crida a processar_fet_biologic, hem rebut codi ',codi)
    naix = trobar_capcalera(text,capcalera)
    if naix == None:
-      #print("No hi ha secció de %s" % capcalera)
+      print("No hi ha secció de %s" % capcalera)
       return []
    # Busquem strings com "* [[1234]]". Ignorem els anys anteriors al 100
    # Ens quedem només amb la posició. Entre any i any, tornarem a buscar,
