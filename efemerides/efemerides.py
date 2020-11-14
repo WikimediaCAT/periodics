@@ -24,7 +24,7 @@ def eshuma(nom):
 
   # Ara mirem l'item corresponent a Wikidata, a partir de la nostra
   try:
-     item = pywikibot.ItemPage.fromPage(pagina,wdsite)
+     item = pywikibot.ItemPage(wdsite).fromPage(pagina)
   except Exception as e:
      print(e)
      # si no tingués item a Wikidata, també ho deixem córrer
@@ -195,7 +195,7 @@ def trobar_huma(text,inici,final):
          nomsenselabarra = mobj.group(1)[0:-1]  # traient l'últim caràcter (|)
       else:
          nomsenselabarra = mobj.group(2)
-      #print "nomsenselabarra", nomsenselabarra
+      #print("nomsenselabarra", nomsenselabarra)
       if eshuma(nomsenselabarra):
           #print "es huma"
           descripcio = trobar_desc(text[inici+mobj.end():])
