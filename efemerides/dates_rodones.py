@@ -225,7 +225,7 @@ def main():
       print(contingut)
       # si ens han dit que creem la pàgina, ho fem
       if gravar:
-         nomplant = "Plantilla:Portada600k/efemèride %s %d" % (mescatala(mes),dia)
+         nomplant = "Portada/efemèride %s %d" % (mescatala(mes),dia)
          page = pywikibot.Page(casite,nomplant)
          page.put(contingut,comment="Robot prepara plantilla amb efemèrides",force=True)
 
