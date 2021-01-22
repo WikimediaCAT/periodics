@@ -243,14 +243,27 @@ def main():
    #uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/all-access/%d/%02d/%02d" % (any_actual,mes,dia)
    # ara mirarem des del web mòbil
    uri = "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/ca.wikipedia.org/mobile-web/%d/%02d/%02d" % (any_actual,mes,dia)
+   # a partir de 22-1-21, cal posar user-agent, si no falla amb un missatge
+   # poc amigable
+   user_agent = {'User-agent': 'JoRobot/1.1 https:jorobot.toolforge.org ca.wiki Main Page'}
    #print "llegint",uri
    try:
-     resposta = requests.get(uri)
-   except:
-     logsortida("Problema llegint dades de wikimedia.org",fout)
+     resposta = requests.get(uri, headers = user_agent)
+   except s as Exception:
+     logsortida("Problema llegint dades de %s" % uri,fout)
+     print(repr(s))
+     raise
      exit()
    if resposta.status_code != 200:
-     logsortida("Llegint dades de wikimedia.org hem obtingut codi %d" % resposta.status_code,fout)
+     logsortida("Llegint dades de %s hem obtingut codi %d" % (uri,resposta.status_code),fout)
+     # Treure aquest comentari per fer debugging si passa alguna cosa
+     # logsortida(resposta.text,fout)
+     #
+     # si la cosa es posa lletja, pots llegir el contingut directament i
+     # posar-ho en un fitxer de text, així:
+     #    provi = open("./provisional","r")
+     #    ranking = json.load(provi)    # load en comptes de loads
+     # else:    #en comptes d'exit()
      exit()
    # Ara tenim les dades, i les passem a JSON
    ranking = json.loads(resposta.text)
