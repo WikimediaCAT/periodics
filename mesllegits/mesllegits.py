@@ -359,7 +359,7 @@ def main():
      # Pot ser que siguin iguals, excepte el salt de línia final. Fem un
      # rstrip() per si de cas
      if textactual.rstrip() != textplantilla.rstrip():
-        pagina.put(textplantilla,comment="Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
+        pagina.put(textplantilla,summary="Robot actualitza carrusel de més llegits amb dades de %d/%d/%d" % (dia,mes,any_actual))
         #print textplantilla
 
      # Això ho diem tant si ha gravat com si no. La qüestió és que està bé.
