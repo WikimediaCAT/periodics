@@ -17,7 +17,7 @@ def eshuma(nom):
      noelvolem = pagina.get()
   except pywikibot.exceptions.NoPageError:  # si la pàgina no existeix, no és humà
      return False
- except pywikibot.exceptions.IsRedirectPageError:
+  except pywikibot.exceptions.IsRedirectPageError:
      pagina = pagina.getRedirectTarget()
      noelvolem = pagina.get()
   except Exception as e: print(e)
