@@ -227,7 +227,7 @@ def main():
       if gravar:
          nomplant = "Portada/efemèride %s %d" % (mescatala(mes),dia)
          page = pywikibot.Page(casite,nomplant)
-         page.put(contingut,comment="Robot prepara plantilla amb efemèrides",force=True)
+         page.put(contingut,summary="Robot prepara plantilla amb efemèrides",force=True)
 
       # ara ja comptem quin dia és demà, per la següent volta al bucle
       data = data + datetime.timedelta(days=1)
