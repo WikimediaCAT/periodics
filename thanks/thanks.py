@@ -158,7 +158,7 @@ def main():
   titolpag = "Usuari:JoRobot/Agraïments/"+anystr+"/"+messtr
   # I amb això ho gravem
   pag = pywikibot.Page(casite,titolpag)
-  pag.put(txtout,comment="Estadístiques d'agraïments",force=True)
+  pag.put(txtout,summary="Estadístiques d'agraïments",force=True)
 
 # Ara cridem el main que hem definit, a la pythonesca manera
 if __name__ == '__main__':
