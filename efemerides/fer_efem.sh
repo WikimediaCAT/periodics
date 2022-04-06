@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATHVENV=/data/project/jorobot/pyvenv_pel_batch
+PATHVENV=/data/project/jorobot/periodics/efemerides/pyvenv_pel_batch
 
 # Des de toolforge
 # S'engega per crontab amb una línia com aquesta (però sense el comentari)
