@@ -1,5 +1,6 @@
 #!/bin/sh
-PATH=/bin:/usr/bin
+
+PATHVENV=/data/project/jorobot/pyvenv_pel_batch
 
 # Des de toolforge
 # S'engega per crontab amb una línia com aquesta (però sense el comentari)
@@ -17,4 +18,4 @@ any=`date +'%Y' -d "+$ANTELACIO days"`
 
 cd $HOMEBOT
 # Creem 7 dies seguits i ho gravem
-/usr/bin/python $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
+$PATHVENV/bin/python3 $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
