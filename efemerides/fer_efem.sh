@@ -6,7 +6,13 @@ PATHVENV=/data/project/jorobot/periodics/efemerides/pyvenv_pel_batch
 # S'engega per crontab amb una línia com aquesta (però sense el comentari)
 #0	15	*	*	3 /usr/bin/jsub -N fer_efem -once -quiet /data/project/jorobot/periodics/efemerides/fer_efem.sh
 # O sigui, el dia 3 de la setmana (dimecres) a les 3 de la tarda
-HOMEBOT=/data/project/jorobot/periodics/efemerides
+
+# Un cop migrat a Kubernetes, s'engega un cop amb
+# toolforge-jobs run fer-efem --command "periodics/efemerides/fer_efem.sh" --image tf-python39 --schedule "0 15 * * 3"
+
+# i es treu del crontab
+
+HOMEBOT=~/periodics/efemerides
 #HOMEBOT=~/programes/periodics/efemerides
 # Aquesta variable té els dies d'antelació amb què creem les plantilles
 ANTELACIO=14
@@ -18,4 +24,4 @@ any=`date +'%Y' -d "+$ANTELACIO days"`
 
 cd $HOMEBOT
 # Creem 7 dies seguits i ho gravem
-$PATHVENV/bin/python3 $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
+./pyvenv_pel_batch/bin/python3 $HOMEBOT/dates_rodones.py $any $mes $dia 7 1
