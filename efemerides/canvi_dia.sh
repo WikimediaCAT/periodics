@@ -5,11 +5,17 @@ PATH=/bin:/usr/bin
 # S'engega per crontab amb una línia com aquesta (però sense el comentari)
 #1	23	*	*	* /usr/bin/jsub -N canvi_dia -once -quiet /data/project/jorobot/periodics/efemerides/canvi_dia.sh
 # O sigui, cada dia de cada mes, a les 23:01 del vespre. Cal tenir en compte
-# que això és hora de toolforge, que va una hora abans, o sigui que en realita
-# s'executa a mitjanit més un minut, per evitar el pic de la mitjanit.
+# que això és hora de toolforge, que va una hora o dues abans, o sigui que
+# en realitat s'executa a mitjanit més un minut, o la una i 1, per evitar el
+# pic de la mitjanit.
 
-HOMEBOT=/data/project/jorobot/periodics/efemerides
-PWBDIR=/data/project/shared/pywikipedia/core
+HOMEBOT=~/periodics/efemerides
+#PWBDIR=/data/project/shared/pywikipedia/core
+PYVENV=$HOMEBOT/pyvenv_pel_batch
+PWBDIR=$PYVENV/lib/python3\.9/site-packages/pywikibot/scripts
 
-python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k/efemèrides
+echo $PWBDIR
+
+$PYVENV/bin/python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k/efemèrides
 #python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k
+#$PYVENV/bin/python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k
