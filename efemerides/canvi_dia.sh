@@ -9,12 +9,17 @@ PATH=/bin:/usr/bin
 # en realitat s'executa a mitjanit més un minut, o la una i 1, per evitar el
 # pic de la mitjanit.
 
+# Un cop migrat a Kubernetes, s'engega un cop amb
+# toolforge-jobs run canvi-dia --command "periodics/efemerides/canvi_dia.sh" --image tf-python39 --schedule "1 23 * * *"
+# requereix instal·lar el mòdul "setup" al pyvenv
+
+
 HOMEBOT=~/periodics/efemerides
 #PWBDIR=/data/project/shared/pywikipedia/core
 PYVENV=$HOMEBOT/pyvenv_pel_batch
 PWBDIR=$PYVENV/lib/python3\.9/site-packages/pywikibot/scripts
 
-echo $PWBDIR
+#echo $PWBDIR
 
 $PYVENV/bin/python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k/efemèrides
 #python3 $PWBDIR/pwb.py touch -page:Plantilla:Portada600k
