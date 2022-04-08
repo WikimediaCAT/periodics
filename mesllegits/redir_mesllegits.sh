@@ -8,7 +8,7 @@ PATH=/bin:/usr/bin
 # a hora UTC)
 
 # Amb Kubernetes, s'engega un cop amb
-# toolforge-jobs run redir --command "periodics/mesllegits/redir_mesllegits.sh" --image tf-python39 --schedule "10 1-6 * * *"
+# toolforge-jobs run redir --command "periodics/mesllegits/redir_mesllegits.sh" --image tf-python39 --schedule "10 0 * * *"
 
 HOMEBOT=~/periodics/mesllegits
 #HOMEBOT=~/programes/periodics/mesllegits
