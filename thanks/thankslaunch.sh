@@ -10,7 +10,13 @@ PATH=/bin:/usr/bin
 # O sigui, el dia 1 de cada mes, a cada hora en punt entre les 7 i les 12 del
 # matí. Tots els mesos, i qualsevol dia de la setmana. Amb un cop n'hi hauria
 # prou, però és per si la màquina estigués caiguda o apagada
-HOMEBOT=/data/project/jorobot/periodics/thanks
+
+# Ara es fa des de Kubernetes, engegant-lo amb toolforge-jobs així:
+
+#toolforge-jobs run thanks --command "periodics/thanks/thankslaunch.sh" --image tf-python39 --schedule "0 7-12 1 * *"
+
+HOMEBOT=~/periodics/thanks
+PYVENV=~/periodics/efemerides/pyvenv_pel_batch
 
 # Aquest shell script està pensat per passar-lo en qualsevol moment del mes
 # i possiblement unes quantes vegades. Només té efecte la primera vegada que
@@ -43,5 +49,5 @@ fi
 
 # si arribem aquí, és que s'ha d'executar
 # thanks.py agafa com a paràmetres l'any i mes del que vols fer estadístiques
-python3 $HOMEBOT/thanks.py $nouany $noumes
+$PYVENV/bin/python3 $HOMEBOT/thanks.py $nouany $noumes
 echo $nouany$noumes > $HOMEBOT/thanksbot.dat  # posem la data de l'últim mes fet
