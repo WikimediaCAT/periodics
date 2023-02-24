@@ -234,7 +234,7 @@ def main():
    #exit()
    fout = open("./mesllegits.resultat","w")
    avui = datetime.date.today()
-   ahir = avui + datetime.timedelta(days=-2)
+   ahir = avui + datetime.timedelta(days=-1)
    any_actual = ahir.year
    mes = ahir.month
    dia = ahir.day
