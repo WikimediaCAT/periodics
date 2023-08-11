@@ -296,7 +296,7 @@ def main():
       titol = elt_article['article']
       vistes = elt_article['views']
 
-      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!="Viquipèdia:" and titol[0:8]!="Special:" and titol[0:7]!="Usuari:" and titol[0:8]!="Usuària:" and titol[0:12]!="Usuari Discu" and titol[0:7]!="Fitxer:":
+      if titol!="Portada" and titol[0:9]!="Especial:" and titol[0:11]!="Viquipèdia:" and titol[0:8]!="Special:" and titol[0:7]!="Usuari:" and titol[0:8]!="Usuària:" and titol[0:12]!="Usuari Discu" and titol[0:12]!="Usuari_Discu" and titol[0:7]!="Fitxer:":
          # Mirem si hi ha redireccions, i posem només el del final
          # i només si encara no hi és. De vegades passa que el mateix
          # article està al top 10 dues vegades amb noms diferents
