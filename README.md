@@ -6,3 +6,5 @@ Tasques periòdiques a executar
 **efemerides** - Ajuda a la gestió de la nova portada, post 600K. Són dos scripts Python i dos de shell que ajuden a llançar-los periòdicament.
 
 **mesllegits** - Actualitza el carrusel dels més llegits de la portada. Per més detalls, anar al directori
+
+**distincions** - Utilitats per gestionar les distincions dels articles a Wikidata. Llistar els articles amb una determinada distinció, esborrats massius d'una distinció, el que vagi sortint.
