@@ -1,0 +1,6 @@
+SELECT ?sitelink ?item ?itemLabel WHERE {
+  ?sitelink schema:isPartOf <https://ca.wikipedia.org/>;
+     schema:about ?item;
+     wikibase:badge wd:Q51759403 . # vol dir que té la badge "llista bona"
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } .
+}  ORDER BY ?sitelink
