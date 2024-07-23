@@ -1,0 +1,12 @@
+SELECT ?badge ?badgeLabel (COUNT(DISTINCT ?item) AS ?count) (SAMPLE(?item) AS ?sample)
+WHERE {
+  ?languagelink schema:isPartOf <https://ca.wikipedia.org/>.
+  ?languagelink wikibase:badge ?badge.
+  ?languagelink schema:about ?item.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". 
+                          ?badge rdfs:label ?badgeLabel.
+                         }
+
+}
+GROUP BY ?badge ?badgeLabel
+ORDER BY DESC(?count)
