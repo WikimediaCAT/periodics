@@ -92,7 +92,7 @@ def llegir_intro(article):
    page = pywikibot.Page(casite,article)
    try:
       txt = page.get()
-   except pywikibot.IsRedirectPage:
+   except pywikibot.exceptions.IsRedirectPageError:
       page = page.getRedirectTarget()
       txt = page.get()
    except:
@@ -303,6 +303,7 @@ def main():
          titol = seguir_redirects(titol)
          if titol not in mes_vistos:
            candidats = candidats + 1
+           print("afegint "+titol)
            mes_vistos.append((titol,vistes))
       if candidats >= 10:
          break
