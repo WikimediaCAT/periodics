@@ -13,43 +13,181 @@ def eshuma(nom):
   casite = pywikibot.Site("ca")
   # primer carreguem la pàgina des de la Viquipèdia
   pagina = pywikibot.Page(casite,nom)
-  try:
-     noelvolem = pagina.get()
-  except pywikibot.exceptions.NoPageError:  # si la pàgina no existeix, no és humà
-     return False
-  except pywikibot.exceptions.IsRedirectPageError:
-     pagina = pagina.getRedirectTarget()
-     noelvolem = pagina.get()
-  except Exception as e: print(e)
 
-  # Ara mirem l'item corresponent a Wikidata, a partir de la nostra
+  if not pagina.exists():   # si la pàgina no existeix, com si no fos humà
+     return False
+
+  # Gestionem les possibles redireccions abans de fer el get()
+  if pagina.isRedirectPage():
+      pagina=pagina.getRedirectTarget()
+
   try:
-     item = pywikibot.ItemPage(wdsite).fromPage(pagina)
+      noelvolem = pagina.get()
   except Exception as e:
-     print(e)
-     # si no tingués item a Wikidata, també ho deixem córrer
+      print(f"Error en carregar el contingut de {nom}: {e}")
+      return False
+
+  # 2. Obtenim el QID de la pàgina (això no demana dades a Wikidata, és segur)
+  qid = None
+  try:
+        qid = pagina.properties().get('wikibase_item')
+  except Exception:
+        pass
+
+  if not qid:
+        # Intent alternatiu de mínim risc si properties() no respon
+        try:
+            item_temp = pagina.data_item()
+            qid = item_temp.getID()
+        except Exception:
+            print(f"La pàgina {nom} no té o no s'ha pogut trobar el seu QID a Wikidata.")
+            return False
+
+  # 3. Consulta directa a l'API en brut (Bypass complet de Pywikibot)
+  # Demanem només les claims (claims) de l'ítem directament a l'API de Wikidata.
+  # Evitem que Pywikibot intenti analitzar o mapejar les propietats.
+  try:
+        params = {
+            'action': 'wbgetentities',
+            'ids': qid,
+            'props': 'claims',
+            'format': 'json'
+        }
+        # Fem la petició HTTP directa a Wikidata
+        request = wdsite._simple_request(**params)
+        dades_brutes = request.submit()
+
+        # Naveguem pel JSON de resposta de l'API en brut
+        entity = dades_brutes.get('entities', {}).get(qid, {})
+        claims = entity.get('claims', {})
+
+        # Busquem si té la P31 (instància de) i si algun dels valors és Q5 (humà)
+        if 'P31' in claims:
+            for statement in claims['P31']:
+                mainsnak = statement.get('mainsnak', {})
+                datavalue = mainsnak.get('datavalue', {})
+                value = datavalue.get('value', {})
+
+                # Comprovem si el destí de la propietat és un ítem i té l'ID Q5
+                if value.get('entity-type') == 'item' and value.get('id') == 'Q5':
+                    # print(f"{nom} és humà (detectat via API en brut)")
+                    return True
+
+  except Exception as e:
+        print(f"Error en la consulta directa d'API per a {nom}: {e}")
+        return False
+
+  return False
+
+"""
+ Això ha estat el resultat d'una sessió de debugging amb Gemini, que no ha acabat funcionant
+ perquè Pywikibot sempre intenta carregar les propietats senceres, i en alguns items hi ha
+ una propietat obsoleta, que dona KeyError
+ Hem intentat capturar tots els possibles punts on petava, però llavors no carregava la
+ propietat "és humà", o sigui que ho hem fet amb crida directa a API, passant de pywikibot
+
+
+  # Busquem l'ítem a Wikidata
+  # Si ho fem amb pywikibot.ItemPage.fromPage(pagina)
+  # de vegades salta un bug molt malparit, si l'item té la
+  # propietat esborrada P1237 (id CANTIC).
+  # Llavors ens donaria excepció, i no carrega l'item.
+  # Per això, obtenim l'item directament des de la pàgina de
+  # cawiki, però fins i tot així intenta carregar-ho i dona
+  # excepció (KeyError)
+
+  # Inicialitzem la variable SEMPRE per evitar l'UnboundLocalError
+  item = None
+
+  try:
+     item = pagina.data_item()
+  except KeyError as ke:
+        # Si dona un KeyError ('p1273') aquí, vol dir que l'ítem existeix!
+        # Podem construir l'ItemPage de manera manual a partir del QID que sol llançar l'error,
+        # o simplement enllaçar-lo pel títol de la pàgina de la Viquipèdia catalana.
+        print(f"Avís: KeyError detectat a data_item() per a {nom} ({ke}). Intentem recuperar-lo manualment...")
+        try:
+            # Si data_item() falla pel KeyError, extraiem el QID des dels sitelinks de la pàgina
+            # que és l'enllaç brut que no carrega propietats internes de Wikidata.
+            qid = pagina.properties().get('wikibase_item')
+            if qid:
+                # Creem l'ItemPage directament amb el QID (p. ex. "Q11005175")
+                # Crear un objecte passant-li el QID directament no consulta l'API i MAI donarà KeyError aquí.
+                item = pywikibot.ItemPage(wdsite, qid)
+        except Exception as e_rescat:
+            print(f"No s'ha pogut rescatar el QID pel mètode alternatiu: {e_rescat}")
+        except Exception:
+            pass
+  except pywikibot.exceptions.NoPageError:
+     print(f"La pàgina {nom} no té ítem a Wikidata.")
+     return False
+  except Exception as e:
+     print(f"Error en obtenir l'ítem de {nom}: {e}")
+     return False
+
+  # Si malgrat tot no hem pogut instanciar l'ítem, sortim
+  if not item:
+     print(f"No s'ha pogut crear l'objecte ítem per a {nom}")
      return False
 
   # pugem la info que conté l'item de Wikidata
   tries = 0
   while tries < 5:
     try:
-      item_dict = item.get()
+      # Demanem només els claims per evitar descarregar coses inútils
+      # que puguin fer petar la connexió
+      item.get(force=True)
       break
     except pywikibot.exceptions.TimeoutError:
       print("Error de timeout a Wikidata, esperem i reintentem")
       time.sleep(30)
       tries = tries + 1
+    except KeyError as ke:
+      # Capturem el bug de les propietats esborrades (com 'p1273')
+      # Resulta que si un item fa referència a una propietat esborrada, com
+      # Enric Casals i Defilló i la P1273 (id CANTIC), la pagina.get falla
+      print(f"Avís: S'ha ignorat una propietat obsoleta ({ke}) a l'ítem de {nom}.")
+      break  # Sortim del bucle perquè les claims ja estaran parcialment carregades
+    except Exception as e:
+      # Per a qualsevol altre error imprevist
+      print(f"Error inesperat a {nom}: {e}")
+      return False
 
-  if 'P31' in item.claims:  # si tenim "instància de" (P31)
-      llista = item.claims['P31']
+  # Comprovem si s'han carregat les claims malgrat possibles KeyErrors
+  # Aquí també hem de blindar-ho, perquè hasattr() torna a intentar de carregar
+  # l'item i es troba la propietat obsoleta.
+
+  claims = {}
+  try:
+        # Intentem obtenir les claims de la manera estàndard
+        if hasattr(item, 'claims') and item.claims:
+            claims = item.claims
+  except KeyError as ke:
+        # Si salta el KeyError ('p1273') en accedir a item.claims,
+        # mirem si s'havien guardat de forma interna o parcial a '_claims'
+        print(f"Avís: KeyError ({ke}) en demanar les claims de {nom}. Intentant accedir a la memòria cau interna...")
+        if hasattr(item, '_claims') and item._claims:
+            claims = item._claims
+  except Exception as e:
+        print(f"Error inesperat en comprovar les declaracions de {nom}: {e}")
+        return False
+
+  # Ojut. Aquí demanem claims (la variable), no item.claims, perquè llavors tornarà a petar
+
+  if 'P31' in claims:  # si tenim "instància de" (P31)
+      llista = claims['P31']
       for clm in llista:
-          quees = clm.getTarget()
-          if quees.getID() == 'Q5':     # si és ésser humà (Q5)
-            #print nom,u"és humà"
-            return True
+          try:
+             quees = clm.getTarget()
+             if quees and hasattr(quees, 'getID') and quees.getID() == 'Q5':  # si és ésser humà (Q5)
+                  # print(f"{nom} és humà")
+                  return True
+          except Exception as e:
+              # Per si algun destí de la propietat P31 donés problemes
+              continue
 
   return False
+"""
 
 def mescatala(mes):
   nomsmesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre']
