@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pywikibot
+from pywikibot.data import api
 import re
 import sys
 import codecs
@@ -54,7 +55,7 @@ def eshuma(nom):
             'format': 'json'
         }
         # Fem la petició HTTP directa a Wikidata
-        request = wdsite._simple_request(**params)
+        request = api.Request(site=wdsite, parameters=params)
         dades_brutes = request.submit()
 
         # Naveguem pel JSON de resposta de l'API en brut
